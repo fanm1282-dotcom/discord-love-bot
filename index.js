@@ -1,12 +1,25 @@
 require("dotenv").config();
 
+const http = require("http");
 const { Client, GatewayIntentBits, Events } = require("discord.js");
 const { askLoveAI } = require("./utils/ai");
 
 console.log("HELLO NEW INDEX");
 
 // ===============================
-// 🧠 GLOBAL ERROR HANDLING
+// 🌐 KEEP ALIVE SERVER (สำคัญมาก กัน SIGTERM / idle kill)
+// ===============================
+http
+  .createServer((req, res) => {
+    res.writeHead(200, { "Content-Type": "text/plain" });
+    res.end("OK");
+  })
+  .listen(process.env.PORT || 3000, () => {
+    console.log("HTTP server running on port", process.env.PORT || 3000);
+  });
+
+// ===============================
+// 🧠 ERROR HANDLING
 // ===============================
 process.on("unhandledRejection", (err) => {
   console.error("UNHANDLED REJECTION:", err);
@@ -23,40 +36,31 @@ const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent, // 🔥 สำคัญมาก (คุณขาดตัวนี้)
+    GatewayIntentBits.MessageContent, // 🔥 สำคัญมาก
   ],
 });
 
 // ===============================
-// 🚀 BOT READY
+// 🚀 READY EVENT
 // ===============================
-client.once(Events.ClientReady, async () => {
+client.once(Events.ClientReady, () => {
   console.log(`${client.user.tag} ออนไลน์แล้ว`);
 
-  console.log(
-    "TOKEN:",
-    process.env.DISCORD_TOKEN ? "มี" : "ไม่มี"
-  );
-
+  console.log("TOKEN:", process.env.DISCORD_TOKEN ? "มี" : "ไม่มี");
   console.log(
     "OPENROUTER:",
     process.env.OPENROUTER_API_KEY ? "มี" : "ไม่มี"
   );
 
-  console.log("BOT READY (ไม่ยิง AI แล้ว ❌ กัน crash)");
-
-  // ❌ เอา AI test ออก (อันนี้ทำให้คุณ crash + spam API)
+  console.log("BOT READY ✔ (no AI spam on boot)");
 });
 
 // ===============================
-// 💬 MESSAGE HANDLER (ตัวจริง)
+// 💬 MESSAGE HANDLER
 // ===============================
 client.on(Events.MessageCreate, async (message) => {
   try {
-    // กัน bot loop
     if (message.author.bot) return;
-
-    // กัน empty
     if (!message.content) return;
 
     console.log("[MSG]", message.content);
@@ -65,16 +69,16 @@ client.on(Events.MessageCreate, async (message) => {
 
     await message.reply(reply);
   } catch (err) {
-    console.error("MESSAGE HANDLER ERROR:", err);
+    console.error("MESSAGE ERROR:", err);
   }
 });
 
 // ===============================
-// 💓 HEARTBEAT (กัน Railway kill)
+// 💓 HEARTBEAT (กัน sleep แต่ไม่ spam)
 // ===============================
 setInterval(() => {
-  console.log("ยังรันอยู่...");
-}, 30000); // 🔥 เปลี่ยนจาก 2 วิ → 30 วิ (2 วิมัน spam log + เปลือง CPU)
+  console.log("heartbeat:", new Date().toISOString());
+}, 60000);
 
 // ===============================
 // 🔑 LOGIN
