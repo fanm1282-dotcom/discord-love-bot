@@ -112,6 +112,25 @@ const cards = [
 ];
 
 /* =========================
+   สถานะความสัมพันธ์
+========================= */
+
+const statuses = [
+
+  'ยังไม่ตัดใจ',
+  'คิดถึงแต่ไม่กล้ากลับมา',
+  'มีคนอื่นแทรก',
+  'ยังเฝ้าดูอยู่',
+  'ความสัมพันธ์เริ่มหมดแรง',
+  'มีโอกาสรีเทิร์น',
+  'อีกฝ่ายยังสับสน',
+  'กำลังพยายามตัดใจ',
+  'ยังแอบเช็คอยู่',
+  'ความรู้สึกยังไม่จบ'
+
+];
+
+/* =========================
    สุ่มไพ่
 ========================= */
 
@@ -125,9 +144,23 @@ function pickCards() {
 
   return [
 
-    shuffled[0],
-    shuffled[1],
-    shuffled[2]
+    {
+      ...shuffled[0],
+      reversed:
+        Math.random() > 0.5
+    },
+
+    {
+      ...shuffled[1],
+      reversed:
+        Math.random() > 0.5
+    },
+
+    {
+      ...shuffled[2],
+      reversed:
+        Math.random() > 0.5
+    }
 
   ];
 
@@ -207,6 +240,15 @@ module.exports = {
           Math.random() * 60
         ) + 20;
 
+      const status =
+
+        statuses[
+          Math.floor(
+            Math.random() *
+            statuses.length
+          )
+        ];
+
       const response =
 
         await openai.chat.completions.create({
@@ -224,28 +266,39 @@ module.exports = {
 
 คุณคือ Nyx
 
-คุณเป็นคนที่วิเคราะห์ความสัมพันธ์เก่งมาก
+คุณเป็น AI วิเคราะห์ความสัมพันธ์
+ที่พูดตรง อ่านคนเก่ง และวิเคราะห์จากไพ่จริง
 
 กฎ:
-- พูดตรง
-- วิเคราะห์แบบคนจริง
+- พูดสั้น
+- 4-6 บรรทัด
+- อ่านง่าย
 - ไม่ต้องโลกสวย
-- วิเคราะห์ปัญหาหลัก
+- ถ้าความสัมพันธ์แย่ให้พูดตรงๆ
 - วิเคราะห์พฤติกรรมอีกฝ่าย
-- ถ้า toxic ให้พูดตรงๆ
-- ตอบอ่านง่าย
-- สรุปตอนท้ายว่าควรไปต่อไหม
+- วิเคราะห์ปัญหาหลัก
+- ถ้ามี toxic ให้พูดเลย
+- ตอนท้ายต้องมี "สรุป:"
+
+คำถาม:
+${question}
+
+สถานะ:
+${status}
 
 [อดีต]
 ${past.name}
+${past.reversed ? '(Reversed)' : ''}
 ${past.meaning}
 
 [ปัจจุบัน]
 ${present.name}
+${present.reversed ? '(Reversed)' : ''}
 ${present.meaning}
 
 [อนาคต]
 ${future.name}
+${future.reversed ? '(Reversed)' : ''}
 ${future.meaning}
 
 ค่าความสัมพันธ์:
@@ -270,7 +323,7 @@ ${future.meaning}
 
           temperature: 0.7,
 
-          max_tokens: 320
+          max_tokens: 120
 
         });
 
@@ -291,6 +344,12 @@ ${future.meaning}
           .setDescription(text)
 
           .addFields(
+
+            {
+              name: '🩶 สถานะล่าสุด',
+              value: status,
+              inline: false
+            },
 
             {
               name: '💔 ความคิดถึง',
@@ -323,21 +382,21 @@ ${future.meaning}
             {
               name: '🕰️ อดีต',
               value:
-                `${past.name}\n${past.meaning}`,
+                `${past.name} ${past.reversed ? '(Reversed)' : ''}\n${past.meaning}`,
               inline: false
             },
 
             {
               name: '⚡ ปัจจุบัน',
               value:
-                `${present.name}\n${present.meaning}`,
+                `${present.name} ${present.reversed ? '(Reversed)' : ''}\n${present.meaning}`,
               inline: false
             },
 
             {
               name: '🔮 อนาคต',
               value:
-                `${future.name}\n${future.meaning}`,
+                `${future.name} ${future.reversed ? '(Reversed)' : ''}\n${future.meaning}`,
               inline: false
             }
 
