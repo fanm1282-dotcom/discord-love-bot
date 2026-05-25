@@ -6,9 +6,6 @@ const fs =
 const path =
   require('path');
 
-const mongoose =
-  require('mongoose');
-
 const {
 
   Client,
@@ -30,22 +27,6 @@ const client =
 
 client.commands =
   new Collection();
-
-mongoose.connect(
-
-  process.env.MONGO_URI
-
-).then(() => {
-
-  console.log(
-    'MongoDB Connected'
-  );
-
-}).catch(err => {
-
-  console.error(err);
-
-});
 
 const commands = [];
 
@@ -74,24 +55,48 @@ for (const file of commandFiles) {
       file
     );
 
-  const command =
-    require(filePath);
+  try {
 
-  if (
-    !command.data ||
-    !command.execute
-  ) continue;
+    const command =
+      require(filePath);
 
-  client.commands.set(
+    if (
+      !command.data ||
+      !command.execute
+    ) {
 
-    command.data.name,
-    command
+      console.log(
+        `${file} โหลดไม่สำเร็จ`
+      );
 
-  );
+      continue;
 
-  commands.push(
-    command.data.toJSON()
-  );
+    }
+
+    client.commands.set(
+
+      command.data.name,
+      command
+
+    );
+
+    commands.push(
+      command.data.toJSON()
+    );
+
+    console.log(
+      `${file} โหลดสำเร็จ`
+    );
+
+  } catch (err) {
+
+    console.error(
+      `${file} ERROR`
+    );
+
+    console.error(err);
+
+  }
 
 }
 
