@@ -1,22 +1,38 @@
+require("dotenv").config();
+
 const http = require("http");
 const { Client, GatewayIntentBits, Events } = require("discord.js");
 const { askLoveAI } = require("./utils/ai");
 
+// ===============================
+// 🧠 กันรันซ้ำ (สำคัญมากบน Railway)
+// ===============================
+if (global.__BOT_RUNNING__) {
+  console.log("Bot already running → exit duplicate instance");
+  process.exit(0);
+}
+global.__BOT_RUNNING__ = true;
+
 console.log("HELLO NEW INDEX");
 
 // ===============================
-// 🌐 KEEP ALIVE SERVER (สำคัญมากสำหรับ Railway)
+// 🌐 HTTP SERVER (FIX HEALTH CHECK)
 // ===============================
 const PORT = process.env.PORT || 3000;
 
-http
-  .createServer((req, res) => {
+const server = http.createServer((req, res) => {
+  if (req.url === "/") {
     res.writeHead(200, { "Content-Type": "text/plain" });
-    res.end("OK");
-  })
-  .listen(PORT, "0.0.0.0", () => {
-    console.log("HTTP running on port", PORT);
-  });
+    return res.end("OK");
+  }
+
+  res.writeHead(200);
+  res.end("ALIVE");
+});
+
+server.listen(PORT, "0.0.0.0", () => {
+  console.log("HTTP running on port", PORT);
+});
 
 // ===============================
 // 🧠 ERROR HANDLING
@@ -25,7 +41,7 @@ process.on("unhandledRejection", console.error);
 process.on("uncaughtException", console.error);
 
 // ===============================
-// 🤖 DISCORD CLIENT
+// 🤖 DISCORD BOT
 // ===============================
 const client = new Client({
   intents: [
@@ -35,11 +51,9 @@ const client = new Client({
   ],
 });
 
-// ===============================
-// 🚀 READY
-// ===============================
 client.once(Events.ClientReady, () => {
   console.log(`${client.user.tag} online`);
+  console.log("PID:", process.pid);
 });
 
 // ===============================
@@ -59,7 +73,7 @@ client.on(Events.MessageCreate, async (message) => {
 });
 
 // ===============================
-// 💓 HEARTBEAT (กัน idle kill)
+// 💓 HEARTBEAT (ลดโหลด ไม่ spam CPU)
 // ===============================
 setInterval(() => {
   console.log("heartbeat:", new Date().toISOString());
@@ -69,3 +83,13 @@ setInterval(() => {
 // 🔑 LOGIN
 // ===============================
 client.login(process.env.DISCORD_TOKEN);
+
+// ===============================
+// 🧯 GRACEFUL SHUTDOWN (FIX SIGTERM)
+// ===============================
+process.on("SIGTERM", () => {
+  console.log("SIGTERM received → shutting down cleanly");
+  server.close();
+  client.destroy();
+  process.exit(0);
+});
