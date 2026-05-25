@@ -1,25 +1,76 @@
 const tarotCards = [
 
-  'The Lovers',
-  'The Moon',
-  'Death',
-  'The Devil',
-  'The Star',
-  'The Hermit',
-  'The Fool',
-  'Justice',
-  'The Empress',
-  'The High Priestess'
+  {
+    name: 'The Lovers',
+    meaning:
+      'ความสัมพันธ์ที่ยังมีสายใย'
+  },
+
+  {
+    name: 'The Moon',
+    meaning:
+      'ความไม่ชัดเจนและความลับ'
+  },
+
+  {
+    name: 'Death',
+    meaning:
+      'การจบเพื่อเริ่มใหม่'
+  },
+
+  {
+    name: 'The Devil',
+    meaning:
+      'ความสัมพันธ์ที่ตัดไม่ขาด'
+  },
+
+  {
+    name: 'The Star',
+    meaning:
+      'ความหวังที่ยังเหลืออยู่'
+  },
+
+  {
+    name: 'The Hermit',
+    meaning:
+      'การถอยออกมาเงียบๆ'
+  }
+
+];
+
+const moonPhases = [
+
+  '🌕 พระจันทร์เต็มดวง',
+  '🌑 คืนจันทร์ดับ',
+  '🌘 ข้างแรม',
+  '🌗 ครึ่งดวง',
+  '🌒 จันทร์เสี้ยว'
+
+];
+
+const universeQuotes = [
+
+  'บางความสัมพันธ์ไม่ได้จบเพราะหมดรัก',
+
+  'ความเงียบของเขา อาจซ่อนบางอย่างไว้มากกว่าที่คิด',
+
+  'คนบางคนหายไป เพื่อให้เรารู้ว่าเคยสำคัญแค่ไหน',
+
+  'หัวใจที่ยังรู้สึก มักหนีความจริงไม่พ้น',
+
+  'คืนนี้ มีบางคนกำลังคิดถึงใครบางคนอยู่เงียบๆ'
 
 ];
 
 const auras = [
 
-  '🌑 พลังแห่งความเงียบ',
   '💔 พลังแห่งความคิดถึง',
-  '🩶 พลังแห่งการรอคอย',
+
+  '🌑 พลังแห่งความเงียบ',
+
   '🕯️ พลังแห่งอดีต',
-  '🌙 พลังแห่งคืนจันทร์ดับ'
+
+  '🌙 พลังแห่งการรอคอย'
 
 ];
 
@@ -29,6 +80,28 @@ function randomCard() {
     Math.floor(
       Math.random() *
       tarotCards.length
+    )
+  ];
+
+}
+
+function randomMoon() {
+
+  return moonPhases[
+    Math.floor(
+      Math.random() *
+      moonPhases.length
+    )
+  ];
+
+}
+
+function randomQuote() {
+
+  return universeQuotes[
+    Math.floor(
+      Math.random() *
+      universeQuotes.length
     )
   ];
 
@@ -48,6 +121,8 @@ function randomAura() {
 module.exports = {
 
   randomCard,
+  randomMoon,
+  randomQuote,
   randomAura
 
 };
