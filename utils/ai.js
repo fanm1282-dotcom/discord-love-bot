@@ -1,22 +1,32 @@
 require('dotenv').config();
 
-const OpenAI = require('openai');
+const OpenAI =
+  require('openai');
 
-const ai = new OpenAI({
-  apiKey: process.env.OPENROUTER_API_KEY,
-  baseURL: 'https://openrouter.ai/api/v1'
-});
+const ai =
+  new OpenAI({
 
-async function askLoveAI(data) {
+    apiKey:
+      process.env
+        .OPENROUTER_API_KEY,
+
+    baseURL:
+      'https://openrouter.ai/api/v1'
+  });
+
+async function askLoveAI(
+  data
+) {
 
   const prompt = `
-คุณคือหมอดูความรักที่จริงจัง เข้าใจความสัมพันธ์มนุษย์
+คุณคือหมอดูความรักที่จริงจัง วิเคราะห์ความสัมพันธ์มนุษย์แบบสมเหตุสมผล
 
 กฎ:
 - พูดภาษาไทย
 - ไม่ฟันธงอนาคต 100%
 - ไม่โลกสวยเกินจริง
-- วิเคราะห์จากข้อมูลเท่านั้น
+- วิเคราะห์จากข้อมูลที่ให้เท่านั้น
+- ตอบแบบจริงจัง
 
 ตอบตามหัวข้อ:
 
@@ -27,28 +37,39 @@ async function askLoveAI(data) {
 📈 แนวโน้มความสัมพันธ์ (1-100 พร้อมเหตุผล)
 💭 ข้อความถึงคุณ
 
-ข้อมูลผู้ใช้:
+ข้อมูล:
 
-สถานะ: ${data.status}
-ความกังวล: ${data.concern}
-พฤติกรรมล่าสุด: ${data.behavior}
-สิ่งที่อยากรู้: ${data.question}
+สถานะ:
+${data.status}
+
+ความกังวล:
+${data.concern}
+
+พฤติกรรมล่าสุด:
+${data.behavior}
+
+สิ่งที่อยากรู้:
+${data.question}
 `;
 
   const completion =
-    await ai.chat.completions.create({
-      model:
-        'meta-llama/llama-3.3-70b-instruct:free',
+    await ai.chat
+      .completions.create({
 
-      messages: [
-        {
-          role: 'user',
-          content: prompt
-        }
-      ]
-    });
+        model:
+          'meta-llama/llama-3.3-70b-instruct:free',
 
-  return completion.choices[0].message.content;
+        messages: [
+          {
+            role: 'user',
+            content: prompt
+          }
+        ]
+      });
+
+  return completion
+    .choices[0]
+    .message.content;
 }
 
 module.exports = {
