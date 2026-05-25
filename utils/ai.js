@@ -1,12 +1,13 @@
 const OpenAI = require("openai");
 
-// OpenRouter client
 const client = new OpenAI({
   apiKey: process.env.OPENROUTER_API_KEY,
   baseURL: "https://openrouter.ai/api/v1",
 });
 
-// 🔥 โมเดล fallback (ของจริงที่ยังใช้ได้บ่อย)
+// ===============================
+// 🔥 MODEL LIST (fallback)
+// ===============================
 const MODELS = [
   "openchat/openchat-3.5-0106",
   "huggingfaceh4/zephyr-7b-beta",
@@ -14,83 +15,61 @@ const MODELS = [
 ];
 
 // ===============================
-// 🧼 CLEAN INPUT (กัน 400 error)
+// 🧼 CLEAN INPUT
 // ===============================
-function normalizePrompt(input) {
+function normalize(input) {
   if (!input) return "hello";
-
   if (typeof input === "string") return input;
-
-  if (typeof input === "object") {
-    return (
-      input.content ||
-      input.text ||
-      input.message ||
-      JSON.stringify(input)
-    );
-  }
-
+  if (typeof input === "object") return input.text || input.content || JSON.stringify(input);
   return String(input);
 }
 
 // ===============================
-// 🧠 CALL OPENROUTER
+// 🔌 CALL MODEL
 // ===============================
-async function callModel(model, prompt) {
+async function call(model, prompt) {
   return await client.chat.completions.create({
     model,
     messages: [
-      {
-        role: "system",
-        content: "You are a helpful assistant.",
-      },
-      {
-        role: "user",
-        content: prompt,
-      },
+      { role: "system", content: "You are a helpful assistant." },
+      { role: "user", content: prompt },
     ],
     temperature: 0.7,
   });
 }
 
 // ===============================
-// 🚀 MAIN FUNCTION
+// 🚀 MAIN
 // ===============================
 async function askLoveAI(input) {
-  const prompt = normalizePrompt(input);
+  const prompt = normalize(input);
 
-  // กันค่าว่าง
   if (!prompt || prompt.trim().length === 0) {
     return "ไม่มีข้อความให้ตอบ";
   }
 
-  let lastError = null;
+  let lastError;
 
   for (const model of MODELS) {
     try {
-      console.log(`[AI] Trying model: ${model}`);
+      console.log("[AI] try:", model);
 
-      const res = await callModel(model, prompt);
+      const res = await call(model, prompt);
 
       const text = res?.choices?.[0]?.message?.content;
 
-      if (!text || typeof text !== "string") {
-        throw new Error("Invalid AI response");
-      }
+      if (!text) throw new Error("empty response");
 
       return text;
     } catch (err) {
-      console.error(`[AI] Failed model: ${model}`, err.message);
+      console.error("[AI FAIL]", model, err.message);
       lastError = err;
-      continue;
     }
   }
 
-  console.error("ALL MODELS FAILED:", lastError);
+  console.error("ALL FAILED:", lastError);
 
-  return "❌ AI ใช้งานไม่ได้ตอนนี้ ลองใหม่อีกครั้ง";
+  return "AI ใช้งานไม่ได้ตอนนี้";
 }
 
-module.exports = {
-  askLoveAI,
-};
+module.exports = { askLoveAI };
