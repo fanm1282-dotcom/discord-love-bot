@@ -1,95 +1,122 @@
-require("dotenv").config();
+require('dotenv').config();
 
-const http = require("http");
-const { Client, GatewayIntentBits, Events } = require("discord.js");
-const { askLoveAI } = require("./utils/ai");
+const fs = require('fs');
 
-// ===============================
-// 🧠 กันรันซ้ำ (สำคัญมากบน Railway)
-// ===============================
-if (global.__BOT_RUNNING__) {
-  console.log("Bot already running → exit duplicate instance");
-  process.exit(0);
-}
-global.__BOT_RUNNING__ = true;
+const {
+  Client,
+  Collection,
+  GatewayIntentBits,
+  REST,
+  Routes
+} = require('discord.js');
 
-console.log("HELLO NEW INDEX");
-
-// ===============================
-// 🌐 HTTP SERVER (FIX HEALTH CHECK)
-// ===============================
-const PORT = process.env.PORT || 3000;
-
-const server = http.createServer((req, res) => {
-  if (req.url === "/") {
-    res.writeHead(200, { "Content-Type": "text/plain" });
-    return res.end("OK");
-  }
-
-  res.writeHead(200);
-  res.end("ALIVE");
-});
-
-server.listen(PORT, "0.0.0.0", () => {
-  console.log("HTTP running on port", PORT);
-});
-
-// ===============================
-// 🧠 ERROR HANDLING
-// ===============================
-process.on("unhandledRejection", console.error);
-process.on("uncaughtException", console.error);
-
-// ===============================
-// 🤖 DISCORD BOT
-// ===============================
 const client = new Client({
   intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent,
-  ],
+    GatewayIntentBits.Guilds
+  ]
 });
 
-client.once(Events.ClientReady, () => {
-  console.log(`${client.user.tag} online`);
-  console.log("PID:", process.pid);
-});
+client.commands =
+  new Collection();
 
-// ===============================
-// 💬 MESSAGE HANDLER
-// ===============================
-client.on(Events.MessageCreate, async (message) => {
+const commands = [];
+
+const commandFiles =
+  fs.readdirSync('./commands')
+    .filter(file =>
+      file.endsWith('.js')
+    );
+
+for (const file of commandFiles) {
+
+  const command =
+    require(`./commands/${file}`);
+
+  client.commands.set(
+    command.data.name,
+    command
+  );
+
+  commands.push(
+    command.data.toJSON()
+  );
+
+}
+
+const rest = new REST({
+  version: '10'
+}).setToken(
+  process.env.DISCORD_TOKEN
+);
+
+(async () => {
+
   try {
-    if (message.author.bot) return;
-    if (!message.content) return;
 
-    const reply = await askLoveAI(message.content);
+    console.log(
+      'กำลังลงทะเบียน Slash Commands...'
+    );
 
-    await message.reply(reply);
+    await rest.put(
+
+      Routes.applicationCommands(
+        process.env.CLIENT_ID
+      ),
+
+      { body: commands }
+
+    );
+
+    console.log(
+      'ลงทะเบียนสำเร็จ'
+    );
+
   } catch (err) {
-    console.error("MESSAGE ERROR:", err);
+
+    console.error(err);
+
   }
+
+})();
+
+client.once('ready', () => {
+
+  console.log(
+    `${client.user.tag} ออนไลน์แล้ว`
+  );
+
 });
 
-// ===============================
-// 💓 HEARTBEAT (ลดโหลด ไม่ spam CPU)
-// ===============================
-setInterval(() => {
-  console.log("heartbeat:", new Date().toISOString());
-}, 60000);
+client.on(
+  'interactionCreate',
+  async interaction => {
 
-// ===============================
-// 🔑 LOGIN
-// ===============================
-client.login(process.env.DISCORD_TOKEN);
+    if (
+      !interaction.isChatInputCommand()
+    ) return;
 
-// ===============================
-// 🧯 GRACEFUL SHUTDOWN (FIX SIGTERM)
-// ===============================
-process.on("SIGTERM", () => {
-  console.log("SIGTERM received → shutting down cleanly");
-  server.close();
-  client.destroy();
-  process.exit(0);
-});
+    const command =
+      client.commands.get(
+        interaction.commandName
+      );
+
+    if (!command) return;
+
+    try {
+
+      await command.execute(
+        interaction
+      );
+
+    } catch (err) {
+
+      console.error(err);
+
+    }
+
+  }
+);
+
+client.login(
+  process.env.DISCORD_TOKEN
+);
