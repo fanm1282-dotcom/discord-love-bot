@@ -1,5 +1,3 @@
-require("dotenv").config();
-
 const http = require("http");
 const { Client, GatewayIntentBits, Events } = require("discord.js");
 const { askLoveAI } = require("./utils/ai");
@@ -7,13 +5,13 @@ const { askLoveAI } = require("./utils/ai");
 console.log("HELLO NEW INDEX");
 
 // ===============================
-// 🌐 KEEP ALIVE SERVER (สำคัญสุด)
+// 🌐 KEEP ALIVE SERVER (สำคัญมากสำหรับ Railway)
 // ===============================
 const PORT = process.env.PORT || 3000;
 
 http
   .createServer((req, res) => {
-    res.writeHead(200);
+    res.writeHead(200, { "Content-Type": "text/plain" });
     res.end("OK");
   })
   .listen(PORT, "0.0.0.0", () => {
@@ -21,7 +19,7 @@ http
   });
 
 // ===============================
-// 🧠 ERROR HANDLER
+// 🧠 ERROR HANDLING
 // ===============================
 process.on("unhandledRejection", console.error);
 process.on("uncaughtException", console.error);
@@ -37,9 +35,11 @@ const client = new Client({
   ],
 });
 
+// ===============================
+// 🚀 READY
+// ===============================
 client.once(Events.ClientReady, () => {
   console.log(`${client.user.tag} online`);
-  console.log("READY ✔");
 });
 
 // ===============================
@@ -59,7 +59,7 @@ client.on(Events.MessageCreate, async (message) => {
 });
 
 // ===============================
-// 💓 HEARTBEAT
+// 💓 HEARTBEAT (กัน idle kill)
 // ===============================
 setInterval(() => {
   console.log("heartbeat:", new Date().toISOString());
