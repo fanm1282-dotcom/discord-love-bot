@@ -1,11 +1,9 @@
 require('dotenv').config();
 
-const fs = require('fs');
-const path = require('path');
+console.log('HELLO NEW INDEX');
 
 const {
   Client,
-  Collection,
   GatewayIntentBits
 } = require('discord.js');
 
@@ -15,73 +13,26 @@ const client = new Client({
   ]
 });
 
-client.commands =
-  new Collection();
+client.once('ready', () => {
 
-const commandsPath =
-  path.join(
-    __dirname,
-    'commands'
+  console.log(
+    `${client.user.tag} ออนไลน์แล้ว`
   );
 
-const commandFiles =
-  fs.readdirSync(commandsPath)
-    .filter(file =>
-      file.endsWith('.js')
-    );
-
-for (const file of commandFiles) {
-
-  const command =
-    require(
-      `./commands/${file}`
-    );
-
-  client.commands.set(
-    command.data.name,
-    command
-  );
-}
-
-const eventsPath =
-  path.join(
-    __dirname,
-    'events'
+  console.log(
+    'TOKEN:',
+    process.env.DISCORD_TOKEN
+      ? 'มี'
+      : 'ไม่มี'
   );
 
-const eventFiles =
-  fs.readdirSync(eventsPath)
-    .filter(file =>
-      file.endsWith('.js')
-    );
-
-for (const file of eventFiles) {
-
-  const event =
-    require(
-      `./events/${file}`
-    );
-
-  client.on(
-    event.name,
-    (...args) =>
-      event.execute(
-        ...args,
-        client
-      )
+  console.log(
+    'OPENROUTER:',
+    process.env.OPENROUTER_API_KEY
+      ? 'มี'
+      : 'ไม่มี'
   );
-}
-
-client.once(
-  'ready',
-  () => {
-
-    console.log(
-      `${client.user.tag} ออนไลน์แล้ว`
-    );
-
-  }
-);
+});
 
 client.login(
   process.env.DISCORD_TOKEN
