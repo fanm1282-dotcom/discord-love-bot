@@ -79,7 +79,7 @@ const rest = new REST({
 
 })();
 
-client.once('ready', () => {
+client.once('clientReady', () => {
 
   console.log(
     `${client.user.tag} ออนไลน์แล้ว`
