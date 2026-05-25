@@ -1,58 +1,61 @@
-const OpenAI = require('openai');
+const OpenAI = require("openai");
 
-console.log('โหลด ai.js แล้ว');
-
-const openai = new OpenAI({
+// OpenRouter client (ใช้ SDK ของ openai แต่ชี้ baseURL ไป openrouter)
+const client = new OpenAI({
   apiKey: process.env.OPENROUTER_API_KEY,
-  baseURL: 'https://openrouter.ai/api/v1'
+  baseURL: "https://openrouter.ai/api/v1",
 });
 
-async function askLoveAI(data) {
-  try {
-    console.log('กำลังเรียก OpenRouter...');
+// 🔥 MODEL LIST (fallback กันล่ม)
+const MODELS = [
+  "openchat/openchat-3.5-0106",          // stable ฟรี
+  "huggingfaceh4/zephyr-7b-beta",       // ฟรีอีกตัว
+  "mistralai/mistral-7b-instruct",      // บางช่วงใช้ได้ (ไม่มี :free แล้ว)
+];
 
-    const completion =
-      await openai.chat.completions.create({
-        model: 'mistralai/mistral-7b-instruct:free',
-        messages: [
-          {
-            role: 'system',
-            content:
-              'คุณคือ AI ที่ให้คำปรึกษาความรัก ตอบแบบเข้าใจง่าย ตรงไปตรงมา และอบอุ่น'
-          },
-          {
-            role: 'user',
-            content: `
-สถานะ: ${data.status}
-เรื่องที่กังวล: ${data.concern}
-พฤติกรรมอีกฝ่าย: ${data.behavior}
-คำถาม: ${data.question}
-            `
-          }
-        ]
-      });
+async function callOpenRouter(model, prompt) {
+  return await client.chat.completions.create({
+    model,
+    messages: [
+      {
+        role: "system",
+        content: "You are a helpful assistant.",
+      },
+      {
+        role: "user",
+        content: prompt,
+      },
+    ],
+    temperature: 0.7,
+  });
+}
 
-    console.log('AI ตอบสำเร็จ');
+// 🔥 MAIN FUNCTION (ตัวที่ bot เรียก)
+async function askLoveAI(prompt) {
+  let lastError = null;
 
-    return (
-      completion.choices?.[0]?.message
-        ?.content ||
-      'ไม่มีคำตอบจาก AI'
-    );
-  } catch (err) {
-    console.error(
-      'OPENROUTER ERROR:',
-      err
-    );
+  for (const model of MODELS) {
+    try {
+      console.log(`[AI] Trying model: ${model}`);
 
-    if (err.status === 429) {
-      return 'AI คนใช้เยอะเกิน รอสักพักแล้วลองใหม่';
+      const res = await callOpenRouter(model, prompt);
+
+      const text = res?.choices?.[0]?.message?.content;
+
+      if (!text) throw new Error("Empty response");
+
+      return text;
+    } catch (err) {
+      console.error(`[AI] Model failed: ${model}`, err.message);
+      lastError = err;
+      continue;
     }
-
-    return 'AI พังหรือเชื่อมต่อไม่ได้';
   }
+
+  console.error("ALL MODELS FAILED:", lastError);
+  return "ตอนนี้ AI ใช้งานไม่ได้ ลองใหม่อีกครั้งนะ";
 }
 
 module.exports = {
-  askLoveAI
+  askLoveAI,
 };
