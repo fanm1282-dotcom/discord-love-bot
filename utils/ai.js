@@ -1,69 +1,44 @@
 require('dotenv').config();
 
-const OpenAI = require('openai').default;
+const OpenAI =
+  require('openai').default;
 
-const client = new OpenAI({
-  apiKey: process.env.OPENROUTER_API_KEY,
-  baseURL: 'https://openrouter.ai/api/v1'
-});
+const client =
+  new OpenAI({
+    apiKey:
+      process.env
+        .OPENROUTER_API_KEY,
 
-async function askLoveAI(data) {
+    baseURL:
+      'https://openrouter.ai/api/v1',
 
-  const prompt = `
-คุณคือหมอดูความรักที่จริงจัง วิเคราะห์ความสัมพันธ์แบบสมเหตุสมผล
+    timeout:
+      30000
+  });
 
-กฎ:
-- พูดภาษาไทย
-- ไม่ฟันธงอนาคต 100%
-- ไม่โลกสวยเกินจริง
-- วิเคราะห์จากข้อมูลที่ให้เท่านั้น
+async function askLoveAI(
+  data
+) {
 
-ตอบตามหัวข้อ:
+  const completion =
+    await client.chat
+      .completions.create({
 
-🔮 ภาพรวมความรัก
-❤️ อีกฝ่ายอาจกำลังรู้สึกอะไร
-⚠️ สิ่งที่ควรระวัง
-🗣️ คำแนะนำ
-📈 แนวโน้มความสัมพันธ์ (1-100 พร้อมเหตุผล)
-💭 ข้อความถึงคุณ
-
-ข้อมูล:
-
-สถานะ: ${data.status}
-ความกังวล: ${data.concern}
-พฤติกรรมล่าสุด: ${data.behavior}
-สิ่งที่อยากรู้: ${data.question}
-`;
-
-  try {
-
-    const completion =
-      await client.chat.completions.create({
         model:
           'meta-llama/llama-3.3-70b-instruct:free',
 
         messages: [
           {
             role: 'user',
-            content: prompt
+            content:
+              'ตอบว่า hello'
           }
         ]
       });
 
-    return completion
-      .choices?.[0]
-      ?.message?.content
-      || 'AI ไม่ตอบกลับ';
-
-  } catch (err) {
-
-    console.error(
-      'OPENROUTER ERROR:',
-      err
-    );
-
-    throw err;
-  }
+  return completion
+    .choices?.[0]
+    ?.message?.content;
 }
 
 module.exports = {
