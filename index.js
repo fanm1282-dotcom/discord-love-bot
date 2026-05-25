@@ -6,6 +6,9 @@ const fs =
 const path =
   require('path');
 
+const mongoose =
+  require('mongoose');
+
 const {
 
   Client,
@@ -16,17 +19,53 @@ const {
 
 } = require('discord.js');
 
+/* =========================
+   CLIENT
+========================= */
+
 const client =
   new Client({
 
     intents: [
-      GatewayIntentBits.Guilds
+
+      GatewayIntentBits.Guilds,
+      GatewayIntentBits.GuildMessages,
+      GatewayIntentBits.MessageContent
+
     ]
 
   });
 
 client.commands =
   new Collection();
+
+/* =========================
+   MONGODB
+========================= */
+
+mongoose.connect(
+
+  process.env.MONGO_URI
+
+).then(() => {
+
+  console.log(
+    'MongoDB Connected'
+  );
+
+}).catch(err => {
+
+  console.error(
+    'MongoDB Error'
+  );
+
+  console.error(err);
+
+});
+
+/* =========================
+   LOAD COMMANDS
+========================= */
 
 const commands = [];
 
@@ -100,6 +139,10 @@ for (const file of commandFiles) {
 
 }
 
+/* =========================
+   REGISTER COMMANDS
+========================= */
+
 const rest =
 
   new REST({
@@ -140,11 +183,19 @@ const rest =
 
   } catch (err) {
 
+    console.error(
+      'ลงทะเบียน Slash Command ไม่สำเร็จ'
+    );
+
     console.error(err);
 
   }
 
 })();
+
+/* =========================
+   READY
+========================= */
 
 client.once(
   'ready',
@@ -160,6 +211,10 @@ client.once(
   }
 
 );
+
+/* =========================
+   INTERACTION
+========================= */
 
 client.on(
   'interactionCreate',
@@ -188,36 +243,44 @@ client.on(
 
       console.error(err);
 
-      if (
-        interaction.replied ||
-        interaction.deferred
-      ) {
+      try {
 
-        await interaction.editReply({
+        if (
+          interaction.replied ||
+          interaction.deferred
+        ) {
 
-          content:
-            'เกิดข้อผิดพลาดในการใช้คำสั่ง'
+          await interaction.editReply({
 
-        });
+            content:
+              'เกิดข้อผิดพลาดในการใช้คำสั่ง'
 
-      } else {
+          });
 
-        await interaction.reply({
+        } else {
 
-          content:
-            'เกิดข้อผิดพลาดในการใช้คำสั่ง',
+          await interaction.reply({
 
-          ephemeral: true
+            content:
+              'เกิดข้อผิดพลาดในการใช้คำสั่ง',
 
-        });
+            ephemeral: true
 
-      }
+          });
+
+        }
+
+      } catch {}
 
     }
 
   }
 
 );
+
+/* =========================
+   LOGIN
+========================= */
 
 client.login(
   process.env.DISCORD_TOKEN
