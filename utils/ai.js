@@ -1,7 +1,8 @@
 require('dotenv').config();
 
 const OpenAI =
-  require('openai').default;
+  require('openai')
+    .default;
 
 console.log(
   'โหลด ai.js แล้ว'
@@ -9,6 +10,7 @@ console.log(
 
 const client =
   new OpenAI({
+
     apiKey:
       process.env
         .OPENROUTER_API_KEY,
