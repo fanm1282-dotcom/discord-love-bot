@@ -1,122 +1,82 @@
-require('dotenv').config();
+require("dotenv").config();
 
-const {
-  Client,
-  GatewayIntentBits,
-  Events
-} = require('discord.js');
+const { Client, GatewayIntentBits, Events } = require("discord.js");
+const { askLoveAI } = require("./utils/ai");
 
-const {
-  askLoveAI
-} = require('./utils/ai');
+console.log("HELLO NEW INDEX");
 
-console.log('HELLO NEW INDEX');
+// ===============================
+// 🧠 GLOBAL ERROR HANDLING
+// ===============================
+process.on("unhandledRejection", (err) => {
+  console.error("UNHANDLED REJECTION:", err);
+});
 
-process.on(
-  'unhandledRejection',
-  err => {
+process.on("uncaughtException", (err) => {
+  console.error("UNCAUGHT EXCEPTION:", err);
+});
 
-    console.error(
-      'UNHANDLED REJECTION:',
-      err
-    );
+// ===============================
+// 🤖 DISCORD CLIENT
+// ===============================
+const client = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent, // 🔥 สำคัญมาก (คุณขาดตัวนี้)
+  ],
+});
 
-  }
-);
-
-process.on(
-  'uncaughtException',
-  err => {
-
-    console.error(
-      'UNCAUGHT EXCEPTION:',
-      err
-    );
-
-  }
-);
-
-const client =
-  new Client({
-    intents: [
-      GatewayIntentBits.Guilds
-    ]
-  });
-
-client.once(
-  Events.ClientReady,
-  async () => {
-
-    console.log(
-      `${client.user.tag} ออนไลน์แล้ว`
-    );
-
-    console.log(
-      'TOKEN:',
-      process.env
-        .DISCORD_TOKEN
-        ? 'มี'
-        : 'ไม่มี'
-    );
-
-    console.log(
-      'OPENROUTER:',
-      process.env
-        .OPENROUTER_API_KEY
-        ? 'มี'
-        : 'ไม่มี'
-    );
-
-    try {
-
-      console.log(
-        'เริ่มยิง AI'
-      );
-
-      const result =
-        await askLoveAI({
-          status:
-            'คนคุย',
-
-          concern:
-            'กลัวเขาหมดใจ',
-
-          behavior:
-            'ตอบช้าลงแต่ยังทักมา',
-
-          question:
-            'ควรไปต่อไหม'
-        });
-
-      console.log(
-        'AI ตอบแล้ว'
-      );
-
-      console.log(
-        result
-      );
-
-    } catch (err) {
-
-      console.error(
-        'AI ERROR:',
-        err
-      );
-
-    }
-  }
-);
-
-// heartbeat กัน Railway kill
-setInterval(() => {
+// ===============================
+// 🚀 BOT READY
+// ===============================
+client.once(Events.ClientReady, async () => {
+  console.log(`${client.user.tag} ออนไลน์แล้ว`);
 
   console.log(
-    'ยังรันอยู่...'
+    "TOKEN:",
+    process.env.DISCORD_TOKEN ? "มี" : "ไม่มี"
   );
 
-}, 2000);
+  console.log(
+    "OPENROUTER:",
+    process.env.OPENROUTER_API_KEY ? "มี" : "ไม่มี"
+  );
 
-client.login(
-  process.env
-    .DISCORD_TOKEN
-);
+  console.log("BOT READY (ไม่ยิง AI แล้ว ❌ กัน crash)");
+
+  // ❌ เอา AI test ออก (อันนี้ทำให้คุณ crash + spam API)
+});
+
+// ===============================
+// 💬 MESSAGE HANDLER (ตัวจริง)
+// ===============================
+client.on(Events.MessageCreate, async (message) => {
+  try {
+    // กัน bot loop
+    if (message.author.bot) return;
+
+    // กัน empty
+    if (!message.content) return;
+
+    console.log("[MSG]", message.content);
+
+    const reply = await askLoveAI(message.content);
+
+    await message.reply(reply);
+  } catch (err) {
+    console.error("MESSAGE HANDLER ERROR:", err);
+  }
+});
+
+// ===============================
+// 💓 HEARTBEAT (กัน Railway kill)
+// ===============================
+setInterval(() => {
+  console.log("ยังรันอยู่...");
+}, 30000); // 🔥 เปลี่ยนจาก 2 วิ → 30 วิ (2 วิมัน spam log + เปลือง CPU)
+
+// ===============================
+// 🔑 LOGIN
+// ===============================
+client.login(process.env.DISCORD_TOKEN);
