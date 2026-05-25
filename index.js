@@ -7,27 +7,24 @@ const { askLoveAI } = require("./utils/ai");
 console.log("HELLO NEW INDEX");
 
 // ===============================
-// 🌐 KEEP ALIVE SERVER (สำคัญมาก กัน SIGTERM / idle kill)
+// 🌐 KEEP ALIVE SERVER (สำคัญสุด)
 // ===============================
+const PORT = process.env.PORT || 3000;
+
 http
   .createServer((req, res) => {
-    res.writeHead(200, { "Content-Type": "text/plain" });
+    res.writeHead(200);
     res.end("OK");
   })
-  .listen(process.env.PORT || 3000, () => {
-    console.log("HTTP server running on port", process.env.PORT || 3000);
+  .listen(PORT, "0.0.0.0", () => {
+    console.log("HTTP running on port", PORT);
   });
 
 // ===============================
-// 🧠 ERROR HANDLING
+// 🧠 ERROR HANDLER
 // ===============================
-process.on("unhandledRejection", (err) => {
-  console.error("UNHANDLED REJECTION:", err);
-});
-
-process.on("uncaughtException", (err) => {
-  console.error("UNCAUGHT EXCEPTION:", err);
-});
+process.on("unhandledRejection", console.error);
+process.on("uncaughtException", console.error);
 
 // ===============================
 // 🤖 DISCORD CLIENT
@@ -36,23 +33,13 @@ const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent, // 🔥 สำคัญมาก
+    GatewayIntentBits.MessageContent,
   ],
 });
 
-// ===============================
-// 🚀 READY EVENT
-// ===============================
 client.once(Events.ClientReady, () => {
-  console.log(`${client.user.tag} ออนไลน์แล้ว`);
-
-  console.log("TOKEN:", process.env.DISCORD_TOKEN ? "มี" : "ไม่มี");
-  console.log(
-    "OPENROUTER:",
-    process.env.OPENROUTER_API_KEY ? "มี" : "ไม่มี"
-  );
-
-  console.log("BOT READY ✔ (no AI spam on boot)");
+  console.log(`${client.user.tag} online`);
+  console.log("READY ✔");
 });
 
 // ===============================
@@ -63,8 +50,6 @@ client.on(Events.MessageCreate, async (message) => {
     if (message.author.bot) return;
     if (!message.content) return;
 
-    console.log("[MSG]", message.content);
-
     const reply = await askLoveAI(message.content);
 
     await message.reply(reply);
@@ -74,7 +59,7 @@ client.on(Events.MessageCreate, async (message) => {
 });
 
 // ===============================
-// 💓 HEARTBEAT (กัน sleep แต่ไม่ spam)
+// 💓 HEARTBEAT
 // ===============================
 setInterval(() => {
   console.log("heartbeat:", new Date().toISOString());
