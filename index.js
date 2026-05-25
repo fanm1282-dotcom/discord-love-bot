@@ -1,5 +1,7 @@
 require('dotenv').config();
 
+console.log('INDEX โหลดแล้ว');
+
 const {
   Client,
   GatewayIntentBits
@@ -21,7 +23,16 @@ client.once('ready', async () => {
     `${client.user.tag} ออนไลน์แล้ว`
   );
 
+  console.log(
+    'API KEY:',
+    process.env.OPENROUTER_API_KEY
+      ? 'มี'
+      : 'ไม่มี'
+  );
+
   try {
+
+    console.log('เริ่มยิง AI');
 
     const result =
       await askLoveAI({
@@ -33,12 +44,17 @@ client.once('ready', async () => {
           'ควรไปต่อไหม'
       });
 
+    console.log('AI ตอบแล้ว');
     console.log(result);
 
   } catch (err) {
-    console.error(err);
-  }
 
+    console.error(
+      'AI ERROR:',
+      err
+    );
+
+  }
 });
 
 client.login(
