@@ -7,8 +7,12 @@ const openai =
   require('../utils/openai');
 
 const {
+
   randomCard,
+  randomMoon,
+  randomQuote,
   randomAura
+
 } = require('../utils/fate');
 
 module.exports = {
@@ -19,7 +23,7 @@ module.exports = {
       .setName('love')
 
       .setDescription(
-        'อ่านดวงความรัก'
+        'อ่านใจความรัก'
       )
 
       .addStringOption(option =>
@@ -39,6 +43,7 @@ module.exports = {
   async execute(interaction) {
 
     const question =
+
       interaction.options.getString(
         'question'
       );
@@ -49,6 +54,12 @@ module.exports = {
 
       const card =
         randomCard();
+
+      const moon =
+        randomMoon();
+
+      const quote =
+        randomQuote();
 
       const aura =
         randomAura();
@@ -67,6 +78,11 @@ module.exports = {
         Math.floor(
           Math.random() * 41
         ) + 50;
+
+      const redFlag =
+        Math.floor(
+          Math.random() * 60
+        ) + 20;
 
       const response =
 
@@ -88,37 +104,45 @@ module.exports = {
 
 หน้าที่:
 - วิเคราะห์ความสัมพันธ์
-- วิเคราะห์สิ่งที่อีกฝ่ายซ่อนอยู่
-- วิเคราะห์ความรู้สึกจริง
+- วิเคราะห์สิ่งที่อีกฝ่ายปิดบัง
+- วิเคราะห์ความคิดลึกๆ
 - วิเคราะห์สิ่งที่ผู้ถามมองไม่เห็น
+- วิเคราะห์พลังงานของความสัมพันธ์
 
-กฎ:
-- ตอบเป็นภาษาไทยธรรมชาติ
-- อ่านง่าย
-- ไม่ต้องใช้คำยาก
+สไตล์:
+- พูดตรง
+- เจ็บนิดๆ
+- เหมือนรู้ความจริง
+- เหมือนแอบเห็นอีกฝ่ายตอนอยู่คนเดียว
+- ไม่โลกสวย
 - ไม่ต้องเบียวเกินไป
-- ตอบให้ดูเหมือนหมอดูจริง
-- พูดตรง แต่ยังมีความลึกลับ
-- ตอบ 4-8 บรรทัด
-- ห้ามตอบเหมือน AI
-- ห้ามตอบโลกสวยเกินจริง
+- อ่านง่าย
+- ตอบ 5-9 บรรทัด
 
 สำคัญ:
-- ให้เหมือนเจ้ารู้ความลับบางอย่าง
-- มีคำเตือนเล็กๆ
-- วิเคราะห์ "อีกฝ่าย" ด้วย
-- บางประโยคให้รู้สึกเจ็บนิดๆ
+- บางครั้งให้เตือนผู้ถาม
+- บางครั้งให้พูดถึง "ความเงียบ"
+- บางครั้งให้พูดเหมือนอีกฝ่ายยังซ่อนอะไรอยู่
 
-ไพ่คืนนี้:
-${card}
+ข้อมูลคืนนี้:
 
-พลังงานคืนนี้:
+ไพ่:
+${card.name}
+
+ความหมาย:
+${card.meaning}
+
+พระจันทร์:
+${moon}
+
+พลังงาน:
 ${aura}
 
-ค่าพลังงาน:
+ค่าความสัมพันธ์:
 ความคิดถึง ${feelings}%
 โอกาสกลับมา ${comeback}%
 ความรู้สึกที่ซ่อนอยู่ ${hidden}%
+Red Flag ${redFlag}%
 
 `
 
@@ -134,9 +158,9 @@ ${aura}
 
           ],
 
-          temperature: 0.9,
+          temperature: 1,
 
-          max_tokens: 220
+          max_tokens: 260
 
         });
 
@@ -144,14 +168,23 @@ ${aura}
         response.choices[0]
           .message.content;
 
+      let color =
+        '#2b1147';
+
+      if (redFlag >= 70)
+        color = '#6e1212';
+
+      if (feelings >= 85)
+        color = '#4b1f6f';
+
       const embed =
 
         new EmbedBuilder()
 
-          .setColor('#2b1147')
+          .setColor(color)
 
           .setTitle(
-            '🔮 คำทำนายแห่งโชคชะตา'
+            '🔮 Nyx กำลังอ่านโชคชะตา...'
           )
 
           .setDescription(text)
@@ -159,8 +192,15 @@ ${aura}
           .addFields(
 
             {
-              name: '🃏 ไพ่คืนนี้',
-              value: card,
+              name: '🃏 ไพ่',
+              value:
+                `${card.name}\n${card.meaning}`,
+              inline: true
+            },
+
+            {
+              name: '🌙 พระจันทร์',
+              value: moon,
               inline: true
             },
 
@@ -183,8 +223,8 @@ ${aura}
             },
 
             {
-              name: '🌙 ความรู้สึกที่ซ่อนอยู่',
-              value: `${hidden}%`,
+              name: '🚩 Red Flag',
+              value: `${redFlag}%`,
               inline: true
             }
 
@@ -193,7 +233,7 @@ ${aura}
           .setFooter({
 
             text:
-              'Nyx • ผู้มองเห็นความจริงในเงามืด'
+              `🕯️ ${quote}`
 
           })
 
@@ -211,7 +251,7 @@ ${aura}
 
       await interaction.editReply(
 
-        'คืนนี้...แม้แต่ดวงดาวก็ยังไม่กล้าเผยความจริง'
+        'คืนนี้...มีบางอย่างในโชคชะตาที่แม้แต่ Nyx ก็ยังมองไม่ชัด'
 
       );
 
