@@ -6,7 +6,7 @@ const client = new OpenAI({
 });
 
 // ===============================
-// 🔥 MODEL LIST (fallback)
+// 🔥 MODEL FALLBACK
 // ===============================
 const MODELS = [
   "openchat/openchat-3.5-0106",
@@ -15,12 +15,16 @@ const MODELS = [
 ];
 
 // ===============================
-// 🧼 CLEAN INPUT
+// 🧼 CLEAN INPUT (กัน 400 error)
 // ===============================
-function normalize(input) {
+function clean(input) {
   if (!input) return "hello";
   if (typeof input === "string") return input;
-  if (typeof input === "object") return input.text || input.content || JSON.stringify(input);
+
+  if (typeof input === "object") {
+    return input.content || input.text || JSON.stringify(input);
+  }
+
   return String(input);
 }
 
@@ -39,20 +43,18 @@ async function call(model, prompt) {
 }
 
 // ===============================
-// 🚀 MAIN
+// 🚀 MAIN FUNCTION
 // ===============================
 async function askLoveAI(input) {
-  const prompt = normalize(input);
+  const prompt = clean(input);
 
-  if (!prompt || prompt.trim().length === 0) {
-    return "ไม่มีข้อความให้ตอบ";
-  }
+  if (!prompt.trim()) return "ไม่มีข้อความให้ตอบ";
 
   let lastError;
 
   for (const model of MODELS) {
     try {
-      console.log("[AI] try:", model);
+      console.log("[AI] trying:", model);
 
       const res = await call(model, prompt);
 
