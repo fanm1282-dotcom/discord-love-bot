@@ -6,151 +6,114 @@ const {
 const openai =
   require('../utils/openai');
 
+/* =========================
+   ไพ่ Tarot 78 ใบ
+========================= */
+
 const cards = [
 
-  {
-    name: 'The Fool',
-    meaning:
-      'การเริ่มต้นใหม่และความไม่แน่นอน'
-  },
+  /* Major Arcana */
 
-  {
-    name: 'The Magician',
-    meaning:
-      'การควบคุมสถานการณ์และเสน่ห์'
-  },
+  { name: 'The Fool', meaning: 'การเริ่มต้นใหม่และความไม่แน่นอน' },
+  { name: 'The Magician', meaning: 'การควบคุมสถานการณ์และเสน่ห์' },
+  { name: 'The High Priestess', meaning: 'ความลับและสิ่งที่ถูกซ่อน' },
+  { name: 'The Empress', meaning: 'ความสัมพันธ์ที่ต้องการการดูแล' },
+  { name: 'The Emperor', meaning: 'ความเย็นชาและการควบคุม' },
+  { name: 'The Hierophant', meaning: 'ความสัมพันธ์จริงจังและกฎเกณฑ์' },
+  { name: 'The Lovers', meaning: 'ความรักและการตัดสินใจ' },
+  { name: 'The Chariot', meaning: 'ความพยายามเดินหน้าต่อ' },
+  { name: 'Strength', meaning: 'การอดทนและควบคุมอารมณ์' },
+  { name: 'The Hermit', meaning: 'การถอยออกมาเงียบๆ' },
+  { name: 'Wheel of Fortune', meaning: 'ความสัมพันธ์กำลังเปลี่ยนแปลง' },
+  { name: 'Justice', meaning: 'ผลของการกระทำและความจริง' },
+  { name: 'The Hanged Man', meaning: 'ความสัมพันธ์ที่หยุดนิ่ง' },
+  { name: 'Death', meaning: 'การจบเพื่อเริ่มใหม่' },
+  { name: 'Temperance', meaning: 'การพยายามปรับเข้าหากัน' },
+  { name: 'The Devil', meaning: 'ความสัมพันธ์ที่ตัดกันไม่ขาด' },
+  { name: 'The Tower', meaning: 'ความจริงที่พังทุกอย่าง' },
+  { name: 'The Star', meaning: 'ความหวังที่ยังเหลืออยู่' },
+  { name: 'The Moon', meaning: 'ความสับสนและความไม่ชัดเจน' },
+  { name: 'The Sun', meaning: 'ความชัดเจนและความสุข' },
+  { name: 'Judgement', meaning: 'การกลับมาและการตัดสินใจครั้งใหญ่' },
+  { name: 'The World', meaning: 'บทสรุปของความสัมพันธ์' },
 
-  {
-    name: 'The High Priestess',
-    meaning:
-      'ความลับและสิ่งที่ถูกซ่อน'
-  },
+  /* Cups */
 
-  {
-    name: 'The Empress',
-    meaning:
-      'ความสัมพันธ์ที่ต้องการการดูแล'
-  },
+  { name: 'Ace of Cups', meaning: 'ความรู้สึกใหม่ๆกำลังก่อตัว' },
+  { name: 'Two of Cups', meaning: 'ยังมีสายสัมพันธ์ต่อกัน' },
+  { name: 'Three of Cups', meaning: 'มีคนอื่นหรือความสัมพันธ์ซ้อน' },
+  { name: 'Four of Cups', meaning: 'ความเบื่อและความเฉยชา' },
+  { name: 'Five of Cups', meaning: 'ความเสียใจที่ยังไม่หาย' },
+  { name: 'Six of Cups', meaning: 'ยังติดอยู่กับอดีต' },
+  { name: 'Seven of Cups', meaning: 'อีกฝ่ายยังลังเล' },
+  { name: 'Eight of Cups', meaning: 'การเดินออกมา' },
+  { name: 'Nine of Cups', meaning: 'ยังมีความสุขบางอย่างอยู่' },
+  { name: 'Ten of Cups', meaning: 'ความสัมพันธ์ที่มีโอกาสจริงจัง' },
 
-  {
-    name: 'The Emperor',
-    meaning:
-      'การควบคุมและความเย็นชา'
-  },
+  { name: 'Page of Cups', meaning: 'ความรู้สึกเด็กๆและการเริ่มสนใจ' },
+  { name: 'Knight of Cups', meaning: 'คนที่ยังมีใจแต่ไม่ชัดเจน' },
+  { name: 'Queen of Cups', meaning: 'ความอ่อนไหวและคิดมาก' },
+  { name: 'King of Cups', meaning: 'เก็บความรู้สึกเก่งมาก' },
 
-  {
-    name: 'The Hierophant',
-    meaning:
-      'ความสัมพันธ์จริงจังและกฎเกณฑ์'
-  },
+  /* Swords */
 
-  {
-    name: 'The Lovers',
-    meaning:
-      'ความรักและการตัดสินใจ'
-  },
+  { name: 'Ace of Swords', meaning: 'ความจริงกำลังถูกเปิดเผย' },
+  { name: 'Two of Swords', meaning: 'การไม่ยอมตัดสินใจ' },
+  { name: 'Three of Swords', meaning: 'ความเสียใจและแผลในใจ' },
+  { name: 'Four of Swords', meaning: 'การเงียบและเว้นระยะ' },
+  { name: 'Five of Swords', meaning: 'ความสัมพันธ์ที่เต็มไปด้วยอีโก้' },
+  { name: 'Six of Swords', meaning: 'การค่อยๆห่างออกไป' },
+  { name: 'Seven of Swords', meaning: 'การโกหกหรือปิดบัง' },
+  { name: 'Eight of Swords', meaning: 'ความสัมพันธ์ที่อึดอัด' },
+  { name: 'Nine of Swords', meaning: 'ความคิดมากและความกังวล' },
+  { name: 'Ten of Swords', meaning: 'จุดจบที่เจ็บมาก' },
 
-  {
-    name: 'The Chariot',
-    meaning:
-      'การพยายามเดินหน้าต่อ'
-  },
+  { name: 'Page of Swords', meaning: 'กำลังแอบส่องหรือจับตาดูอยู่' },
+  { name: 'Knight of Swords', meaning: 'อารมณ์แรงและพูดตรงเกินไป' },
+  { name: 'Queen of Swords', meaning: 'เย็นชาแต่ยังรู้สึกอยู่' },
+  { name: 'King of Swords', meaning: 'ใช้เหตุผลมากกว่าความรู้สึก' },
 
-  {
-    name: 'Strength',
-    meaning:
-      'การอดทนและควบคุมอารมณ์'
-  },
+  /* Wands */
 
-  {
-    name: 'The Hermit',
-    meaning:
-      'การถอยห่างและคิดคนเดียว'
-  },
+  { name: 'Ace of Wands', meaning: 'ความสัมพันธ์กำลังเริ่มร้อนแรง' },
+  { name: 'Two of Wands', meaning: 'อีกฝ่ายกำลังมองทางเลือกอื่น' },
+  { name: 'Three of Wands', meaning: 'กำลังรออะไรบางอย่าง' },
+  { name: 'Four of Wands', meaning: 'ความสัมพันธ์มั่นคงขึ้น' },
+  { name: 'Five of Wands', meaning: 'ความขัดแย้งและการทะเลาะ' },
+  { name: 'Six of Wands', meaning: 'อีกฝ่ายยังต้องการการยอมรับ' },
+  { name: 'Seven of Wands', meaning: 'การตั้งกำแพงป้องกันตัวเอง' },
+  { name: 'Eight of Wands', meaning: 'เรื่องนี้กำลังเคลื่อนไหวเร็ว' },
+  { name: 'Nine of Wands', meaning: 'ความเหนื่อยล้าทางใจ' },
+  { name: 'Ten of Wands', meaning: 'ความสัมพันธ์ที่หนักเกินไป' },
 
-  {
-    name: 'Wheel of Fortune',
-    meaning:
-      'ความสัมพันธ์กำลังเปลี่ยนแปลง'
-  },
+  { name: 'Page of Wands', meaning: 'กำลังอยากเริ่มต้นใหม่' },
+  { name: 'Knight of Wands', meaning: 'เข้ามาแรงแต่อาจไปเร็ว' },
+  { name: 'Queen of Wands', meaning: 'เสน่ห์แรงและมั่นใจในตัวเอง' },
+  { name: 'King of Wands', meaning: 'คนที่ชอบควบคุมเกม' },
 
-  {
-    name: 'Justice',
-    meaning:
-      'ผลของสิ่งที่เคยทำไว้'
-  },
+  /* Pentacles */
 
-  {
-    name: 'The Hanged Man',
-    meaning:
-      'ความสัมพันธ์ที่หยุดนิ่ง'
-  },
+  { name: 'Ace of Pentacles', meaning: 'โอกาสเริ่มต้นใหม่ที่มั่นคง' },
+  { name: 'Two of Pentacles', meaning: 'อีกฝ่ายกำลังลังเล' },
+  { name: 'Three of Pentacles', meaning: 'ต้องใช้ความร่วมมือมากขึ้น' },
+  { name: 'Four of Pentacles', meaning: 'การยึดติดและไม่ปล่อย' },
+  { name: 'Five of Pentacles', meaning: 'ความเหงาและการถูกทอดทิ้ง' },
+  { name: 'Six of Pentacles', meaning: 'ความสัมพันธ์ที่ให้ไม่เท่ากัน' },
+  { name: 'Seven of Pentacles', meaning: 'กำลังรอผลลัพธ์บางอย่าง' },
+  { name: 'Eight of Pentacles', meaning: 'ยังพยายามกับความสัมพันธ์นี้อยู่' },
+  { name: 'Nine of Pentacles', meaning: 'อีกฝ่ายเริ่มรักอิสระตัวเอง' },
+  { name: 'Ten of Pentacles', meaning: 'ความสัมพันธ์ระยะยาวและอนาคต' },
 
-  {
-    name: 'Death',
-    meaning:
-      'การจบเพื่อเริ่มต้นใหม่'
-  },
-
-  {
-    name: 'Temperance',
-    meaning:
-      'การพยายามปรับตัวเข้าหากัน'
-  },
-
-  {
-    name: 'The Devil',
-    meaning:
-      'ความสัมพันธ์ที่ตัดกันไม่ขาด'
-  },
-
-  {
-    name: 'The Tower',
-    meaning:
-      'การพังทลายและความจริงที่เจ็บ'
-  },
-
-  {
-    name: 'The Star',
-    meaning:
-      'ความหวังที่ยังเหลืออยู่'
-  },
-
-  {
-    name: 'The Moon',
-    meaning:
-      'ความไม่ชัดเจนและความสับสน'
-  },
-
-  {
-    name: 'The Sun',
-    meaning:
-      'ความชัดเจนและความสุข'
-  },
-
-  {
-    name: 'Judgement',
-    meaning:
-      'การกลับมาและการตัดสินใจครั้งใหญ่'
-  },
-
-  {
-    name: 'The World',
-    meaning:
-      'บทสรุปของความสัมพันธ์'
-  }
+  { name: 'Page of Pentacles', meaning: 'กำลังเริ่มคิดจริงจังมากขึ้น' },
+  { name: 'Knight of Pentacles', meaning: 'ช้าแต่จริงจัง' },
+  { name: 'Queen of Pentacles', meaning: 'ความสัมพันธ์ที่มั่นคงและดูแลกัน' },
+  { name: 'King of Pentacles', meaning: 'ต้องการความมั่นคงระยะยาว' }
 
 ];
 
-const relationshipTypes = [
-
-  'Soulmate',
-  'Karmic',
-  'Twin Flame',
-  'Red Flag',
-  'Complicated'
-
-];
+/* =========================
+   สุ่มไพ่
+========================= */
 
 function pickCards() {
 
@@ -176,11 +139,8 @@ function bar(value) {
     Math.floor(value / 10);
 
   return (
-
     '█'.repeat(filled) +
-
     '░'.repeat(10 - filled)
-
   );
 
 }
@@ -213,7 +173,6 @@ module.exports = {
   async execute(interaction) {
 
     const question =
-
       interaction.options.getString(
         'question'
       );
@@ -227,15 +186,6 @@ module.exports = {
         present,
         future
       ] = pickCards();
-
-      const relation =
-
-        relationshipTypes[
-          Math.floor(
-            Math.random() *
-            relationshipTypes.length
-          )
-        ];
 
       const feelings =
         Math.floor(
@@ -274,35 +224,17 @@ module.exports = {
 
 คุณคือ Nyx
 
-คุณไม่ใช่หมอดูแฟนตาซี
-แต่เป็นคนที่วิเคราะห์ความสัมพันธ์เก่งมาก
-
-หน้าที่:
-- วิเคราะห์จากไพ่ทั้ง 3 ใบ
-- วิเคราะห์ความสัมพันธ์แบบตรงๆ
-- วิเคราะห์สิ่งที่อีกฝ่ายกำลังคิด
-- วิเคราะห์ปัญหาจริง
-- วิเคราะห์สิ่งที่ผู้ถามยังไม่ยอมรับ
+คุณเป็นคนที่วิเคราะห์ความสัมพันธ์เก่งมาก
 
 กฎ:
-- พูดเหมือนคนจริง
-- อ่านง่าย
-- ไม่ต้องใช้คำเวอร์
+- พูดตรง
+- วิเคราะห์แบบคนจริง
 - ไม่ต้องโลกสวย
-- ถ้าความสัมพันธ์แย่ให้พูดตรงๆ
-- ถ้าอีกฝ่าย toxic ให้พูดตรงๆ
-- อย่าตอบกว้างๆ
-- ให้เหมือนคนที่ดูคนออกจริงๆ
-- ตอบประมาณ 6-10 บรรทัด
-
-สำคัญ:
-- วิเคราะห์ให้เฉพาะเจาะจง
-- บอกปัญหาหลักของความสัมพันธ์
+- วิเคราะห์ปัญหาหลัก
 - วิเคราะห์พฤติกรรมอีกฝ่าย
-- ท้ายคำตอบให้สรุปตรงๆว่าควรไปต่อไหม
-
-ประเภทความสัมพันธ์:
-${relation}
+- ถ้า toxic ให้พูดตรงๆ
+- ตอบอ่านง่าย
+- สรุปตอนท้ายว่าควรไปต่อไหม
 
 [อดีต]
 ${past.name}
@@ -346,20 +278,11 @@ ${future.meaning}
         response.choices[0]
           .message.content;
 
-      let color =
-        '#202225';
-
-      if (toxic >= 70)
-        color = '#7a1010';
-
-      if (feelings >= 85)
-        color = '#52206b';
-
       const embed =
 
         new EmbedBuilder()
 
-          .setColor(color)
+          .setColor('#202225')
 
           .setTitle(
             '🃏 วิเคราะห์ไพ่ทาโร่'
@@ -368,12 +291,6 @@ ${future.meaning}
           .setDescription(text)
 
           .addFields(
-
-            {
-              name: '🧩 ความสัมพันธ์',
-              value: relation,
-              inline: true
-            },
 
             {
               name: '💔 ความคิดถึง',
@@ -429,7 +346,7 @@ ${future.meaning}
           .setFooter({
 
             text:
-              'Nyx • Relationship Analysis'
+              'Nyx • Tarot Reading'
 
           })
 
@@ -446,9 +363,7 @@ ${future.meaning}
       console.error(err);
 
       await interaction.editReply(
-
         'ตอนนี้ยังอ่านความสัมพันธ์นี้ไม่ออก'
-
       );
 
     }
