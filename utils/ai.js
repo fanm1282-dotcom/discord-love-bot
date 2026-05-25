@@ -5,7 +5,6 @@ const OpenAI =
 
 const ai =
   new OpenAI({
-
     apiKey:
       process.env
         .OPENROUTER_API_KEY,
@@ -19,14 +18,13 @@ async function askLoveAI(
 ) {
 
   const prompt = `
-คุณคือหมอดูความรักที่จริงจัง วิเคราะห์ความสัมพันธ์มนุษย์แบบสมเหตุสมผล
+คุณคือหมอดูความรักที่จริงจัง วิเคราะห์ความสัมพันธ์แบบสมเหตุสมผล
 
 กฎ:
 - พูดภาษาไทย
 - ไม่ฟันธงอนาคต 100%
 - ไม่โลกสวยเกินจริง
-- วิเคราะห์จากข้อมูลที่ให้เท่านั้น
-- ตอบแบบจริงจัง
+- วิเคราะห์จากข้อมูลเท่านั้น
 
 ตอบตามหัวข้อ:
 
@@ -37,7 +35,7 @@ async function askLoveAI(
 📈 แนวโน้มความสัมพันธ์ (1-100 พร้อมเหตุผล)
 💭 ข้อความถึงคุณ
 
-ข้อมูล:
+ข้อมูลผู้ใช้
 
 สถานะ:
 ${data.status}
@@ -53,19 +51,17 @@ ${data.question}
 `;
 
   const completion =
-    await ai.chat
-      .completions.create({
+    await ai.chat.completions.create({
+      model:
+        'meta-llama/llama-3.3-70b-instruct:free',
 
-        model:
-          'meta-llama/llama-3.3-70b-instruct:free',
-
-        messages: [
-          {
-            role: 'user',
-            content: prompt
-          }
-        ]
-      });
+      messages: [
+        {
+          role: 'user',
+          content: prompt
+        }
+      ]
+    });
 
   return completion
     .choices[0]
