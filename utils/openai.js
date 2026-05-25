@@ -1,6 +1,6 @@
 const OpenAI = require('openai');
 
-const client = new OpenAI({
+const openai = new OpenAI({
 
   baseURL:
     'https://openrouter.ai/api/v1',
@@ -10,4 +10,4 @@ const client = new OpenAI({
 
 });
 
-module.exports = client;
+module.exports = openai;
