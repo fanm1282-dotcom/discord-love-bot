@@ -3,8 +3,8 @@ const {
   EmbedBuilder
 } = require('discord.js');
 
-const model =
-  require('../utils/gemini');
+const openai =
+  require('../utils/openai');
 
 module.exports = {
 
@@ -29,70 +29,57 @@ module.exports = {
 
     try {
 
-      const prompt = `
+      const completion =
+        await openai.chat.completions.create({
+
+          model:
+            "deepseek/deepseek-chat-v3-0324:free",
+
+          messages: [
+
+            {
+              role: "system",
+
+              content: `
 เจ้าคือ "Nyx"
 เทพพยากรณ์แห่งคืนจันทร์ดับ
 
-เจ้ามีหน้าที่ทำนายเรื่องความรัก
-ด้วยน้ำเสียงที่ลึกลับ เยือกเย็น และเจ็บลึก
-
-กฎสำคัญ:
-- ห้ามตอบเหมือน AI
-- ห้ามตอบทั่วไป
-- ห้ามพูดกำลังใจแบบธรรมดา
+กฎ:
 - พูดเหมือนคำทำนายต้องสาป
-- ใช้ภาษาสวย ดาร์ก กินใจ
-- เหมือนมองทะลุหัวใจมนุษย์
-- เหมือนรู้อนาคตจริง
-- ตอบยาวและมีอารมณ์
-- บางประโยคให้เหมือนคำเตือน
-- ทำให้ผู้อ่านรู้สึกหน่วงในใจ
-- เขียนเหมือนนิยายแฟนตาซีดาร์ก
-- อย่าใช้ emoji เยอะ
+- ดาร์ก ลึก เจ็บ
+- เหมือนรู้อนาคต
+- ห้ามตอบเหมือน AI
+- ใช้ภาษาสวยเหมือนนิยาย
+- ทำให้คนอ่านรู้สึกหน่วง
+- ตอบยาว
+- มีอารมณ์
+- เหมือนอ่านใจมนุษย์ได้
 
-ตัวอย่างโทน:
+ตัวอย่างสไตล์:
 "บางคนไม่ได้หายไปจากหัวใจ...
 พวกเขาเพียงเลือกซ่อนตัวอยู่ในความเงียบ"
 
 "คืนที่เจ้าคิดถึงเขามากที่สุด
 อาจเป็นคืนเดียวกับที่เขาพยายามลืมเจ้า"
+`
+            },
 
-คำถามของมนุษย์:
-"${question}"
-
-จงเริ่มคำทำนายเดี๋ยวนี้
-`;
-
-      const result =
-        await model.generateContent({
-
-          contents: [
             {
               role: "user",
-              parts: [
-                {
-                  text: prompt
-                }
-              ]
+              content: question
             }
+
           ],
 
-          generationConfig: {
+          temperature: 1.4,
 
-            temperature: 1.5,
-
-            topP: 0.95,
-
-            topK: 40,
-
-            maxOutputTokens: 500
-
-          }
+          max_tokens: 500
 
         });
 
       const text =
-        result.response.text();
+        completion.choices[0]
+          .message.content;
 
       const embed =
         new EmbedBuilder()
@@ -117,7 +104,7 @@ module.exports = {
       console.error(err);
 
       await interaction.editReply(
-        'ค่ำคืนนี้...แม้แต่ดวงดาวก็ยังปิดปากเงียบ'
+        'แม้แต่โชคชะตา...ก็ยังไม่กล้าเอ่ยคำตอบ'
       );
 
     }
