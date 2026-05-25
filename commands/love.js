@@ -84,6 +84,26 @@ module.exports = {
           Math.random() * 60
         ) + 20;
 
+      const obsession =
+        Math.floor(
+          Math.random() * 60
+        ) + 20;
+
+      function bar(value) {
+
+        const filled =
+          Math.floor(value / 10);
+
+        return (
+
+          '█'.repeat(filled) +
+
+          '░'.repeat(10 - filled)
+
+        );
+
+      }
+
       const response =
 
         await openai.chat.completions.create({
@@ -115,7 +135,6 @@ module.exports = {
 - เหมือนรู้ความจริง
 - เหมือนแอบเห็นอีกฝ่ายตอนอยู่คนเดียว
 - ไม่โลกสวย
-- ไม่ต้องเบียวเกินไป
 - อ่านง่าย
 - ตอบ 5-9 บรรทัด
 
@@ -143,6 +162,7 @@ ${aura}
 โอกาสกลับมา ${comeback}%
 ความรู้สึกที่ซ่อนอยู่ ${hidden}%
 Red Flag ${redFlag}%
+ความหมกมุ่น ${obsession}%
 
 `
 
@@ -212,20 +232,37 @@ Red Flag ${redFlag}%
 
             {
               name: '💔 ความคิดถึง',
-              value: `${feelings}%`,
-              inline: true
+              value:
+                `${bar(feelings)} ${feelings}%`,
+              inline: false
             },
 
             {
               name: '🕯️ โอกาสกลับมา',
-              value: `${comeback}%`,
-              inline: true
+              value:
+                `${bar(comeback)} ${comeback}%`,
+              inline: false
+            },
+
+            {
+              name: '🌙 ความรู้สึกที่ซ่อนอยู่',
+              value:
+                `${bar(hidden)} ${hidden}%`,
+              inline: false
             },
 
             {
               name: '🚩 Red Flag',
-              value: `${redFlag}%`,
-              inline: true
+              value:
+                `${bar(redFlag)} ${redFlag}%`,
+              inline: false
+            },
+
+            {
+              name: '🔥 ความหมกมุ่น',
+              value:
+                `${bar(obsession)} ${obsession}%`,
+              inline: false
             }
 
           )
@@ -251,7 +288,7 @@ Red Flag ${redFlag}%
 
       await interaction.editReply(
 
-        'คืนนี้...มีบางอย่างในโชคชะตาที่แม้แต่ Nyx ก็ยังมองไม่ชัด'
+        'คืนนี้...แม้แต่ดวงดาวก็ยังไม่กล้าเผยความจริง'
 
       );
 
