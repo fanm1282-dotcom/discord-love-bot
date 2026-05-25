@@ -126,7 +126,7 @@ const rest =
 
         process.env.CLIENT_ID,
 
-        'ใส่เซิร์ฟเวอร์ไอดี'
+        process.env.GUILD_ID
 
       ),
 
