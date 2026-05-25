@@ -6,7 +6,7 @@ const client = new OpenAI({
 });
 
 // ===============================
-// 🔥 MODEL FALLBACK
+// 🔥 MODELS (fallback)
 // ===============================
 const MODELS = [
   "openchat/openchat-3.5-0106",
@@ -15,17 +15,26 @@ const MODELS = [
 ];
 
 // ===============================
-// 🧼 CLEAN INPUT (กัน 400 error)
+// 🧼 SAFE CLEAN INPUT (กัน 400 error)
 // ===============================
 function clean(input) {
   if (!input) return "hello";
-  if (typeof input === "string") return input;
 
-  if (typeof input === "object") {
-    return input.content || input.text || JSON.stringify(input);
+  if (typeof input === "string") {
+    return input.trim() || "hello";
   }
 
-  return String(input);
+  if (typeof input === "object") {
+    const text =
+      input.content ||
+      input.text ||
+      input.message ||
+      "";
+
+    return String(text).trim() || "hello";
+  }
+
+  return "hello";
 }
 
 // ===============================
@@ -35,8 +44,14 @@ async function call(model, prompt) {
   return await client.chat.completions.create({
     model,
     messages: [
-      { role: "system", content: "You are a helpful assistant." },
-      { role: "user", content: prompt },
+      {
+        role: "system",
+        content: "You are a helpful assistant.",
+      },
+      {
+        role: "user",
+        content: prompt,
+      },
     ],
     temperature: 0.7,
   });
@@ -48,7 +63,7 @@ async function call(model, prompt) {
 async function askLoveAI(input) {
   const prompt = clean(input);
 
-  if (!prompt.trim()) return "ไม่มีข้อความให้ตอบ";
+  if (!prompt) return "ไม่มีข้อความให้ตอบ";
 
   let lastError;
 
@@ -60,18 +75,20 @@ async function askLoveAI(input) {
 
       const text = res?.choices?.[0]?.message?.content;
 
-      if (!text) throw new Error("empty response");
+      if (text && text.trim()) {
+        return text;
+      }
 
-      return text;
+      throw new Error("empty response");
     } catch (err) {
       console.error("[AI FAIL]", model, err.message);
       lastError = err;
     }
   }
 
-  console.error("ALL FAILED:", lastError);
+  console.error("ALL MODELS FAILED:", lastError);
 
-  return "AI ใช้งานไม่ได้ตอนนี้";
+  return "AI ใช้งานไม่ได้ตอนนี้ ลองใหม่อีกครั้ง";
 }
 
 module.exports = { askLoveAI };
