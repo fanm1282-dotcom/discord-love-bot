@@ -1,7 +1,5 @@
 require('dotenv').config();
 
-console.log('HELLO NEW INDEX');
-
 const {
   Client,
   GatewayIntentBits,
@@ -12,11 +10,38 @@ const {
   askLoveAI
 } = require('./utils/ai');
 
-const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds
-  ]
-});
+console.log('HELLO NEW INDEX');
+
+process.on(
+  'unhandledRejection',
+  err => {
+
+    console.error(
+      'UNHANDLED REJECTION:',
+      err
+    );
+
+  }
+);
+
+process.on(
+  'uncaughtException',
+  err => {
+
+    console.error(
+      'UNCAUGHT EXCEPTION:',
+      err
+    );
+
+  }
+);
+
+const client =
+  new Client({
+    intents: [
+      GatewayIntentBits.Guilds
+    ]
+  });
 
 client.once(
   Events.ClientReady,
@@ -28,14 +53,16 @@ client.once(
 
     console.log(
       'TOKEN:',
-      process.env.DISCORD_TOKEN
+      process.env
+        .DISCORD_TOKEN
         ? 'มี'
         : 'ไม่มี'
     );
 
     console.log(
       'OPENROUTER:',
-      process.env.OPENROUTER_API_KEY
+      process.env
+        .OPENROUTER_API_KEY
         ? 'มี'
         : 'ไม่มี'
     );
@@ -48,11 +75,15 @@ client.once(
 
       const result =
         await askLoveAI({
-          status: 'คนคุย',
+          status:
+            'คนคุย',
+
           concern:
             'กลัวเขาหมดใจ',
+
           behavior:
             'ตอบช้าลงแต่ยังทักมา',
+
           question:
             'ควรไปต่อไหม'
         });
@@ -61,7 +92,9 @@ client.once(
         'AI ตอบแล้ว'
       );
 
-      console.log(result);
+      console.log(
+        result
+      );
 
     } catch (err) {
 
@@ -74,6 +107,16 @@ client.once(
   }
 );
 
+// heartbeat กัน Railway kill
+setInterval(() => {
+
+  console.log(
+    'ยังรันอยู่...'
+  );
+
+}, 2000);
+
 client.login(
-  process.env.DISCORD_TOKEN
+  process.env
+    .DISCORD_TOKEN
 );
