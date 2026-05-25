@@ -117,8 +117,12 @@ const rest =
 
     await rest.put(
 
-      Routes.applicationCommands(
-        process.env.CLIENT_ID
+      Routes.applicationGuildCommands(
+
+        process.env.CLIENT_ID,
+
+        'ใส่เซิร์ฟเวอร์ไอดี'
+
       ),
 
       { body: commands }
