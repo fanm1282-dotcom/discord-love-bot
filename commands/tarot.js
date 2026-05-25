@@ -7,6 +7,13 @@ const openai =
   require('../utils/openai');
 
 /* =========================
+   COOLDOWN
+========================= */
+
+const cooldowns =
+  new Map();
+
+/* =========================
    ไพ่ Tarot 78 ใบ
 ========================= */
 
@@ -204,6 +211,62 @@ module.exports = {
       ),
 
   async execute(interaction) {
+
+    /* =========================
+       COOLDOWN
+    ========================= */
+
+    const userId =
+      interaction.user.id;
+
+    const cooldown =
+      12 * 60 * 60 * 1000;
+
+    const now =
+      Date.now();
+
+    if (
+      cooldowns.has(userId)
+    ) {
+
+      const expiration =
+
+        cooldowns.get(userId) +
+        cooldown;
+
+      if (now < expiration) {
+
+        const left =
+          expiration - now;
+
+        const hours =
+          Math.floor(
+            left / 3600000
+          );
+
+        const minutes =
+          Math.floor(
+            (left % 3600000)
+            / 60000
+          );
+
+        return interaction.reply({
+
+          content:
+            `⏳ คุณเปิดไพ่ไปแล้ว\nรออีก ${hours} ชั่วโมง ${minutes} นาที`,
+
+          ephemeral: true
+
+        });
+
+      }
+
+    }
+
+    cooldowns.set(
+      userId,
+      now
+    );
 
     const question =
       interaction.options.getString(
