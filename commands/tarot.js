@@ -9,27 +9,105 @@ const openai =
 const cards = [
 
   {
-    name: 'The Lovers',
+    name: 'The Fool',
     meaning:
-      'ความสัมพันธ์และการตัดสินใจ'
+      'การเริ่มต้นใหม่และความไม่แน่นอน'
   },
 
   {
-    name: 'The Moon',
+    name: 'The Magician',
     meaning:
-      'ความไม่ชัดเจนและความลับ'
+      'การควบคุมสถานการณ์และเสน่ห์'
+  },
+
+  {
+    name: 'The High Priestess',
+    meaning:
+      'ความลับและสิ่งที่ถูกซ่อน'
+  },
+
+  {
+    name: 'The Empress',
+    meaning:
+      'ความสัมพันธ์ที่ต้องการการดูแล'
+  },
+
+  {
+    name: 'The Emperor',
+    meaning:
+      'การควบคุมและความเย็นชา'
+  },
+
+  {
+    name: 'The Hierophant',
+    meaning:
+      'ความสัมพันธ์จริงจังและกฎเกณฑ์'
+  },
+
+  {
+    name: 'The Lovers',
+    meaning:
+      'ความรักและการตัดสินใจ'
+  },
+
+  {
+    name: 'The Chariot',
+    meaning:
+      'การพยายามเดินหน้าต่อ'
+  },
+
+  {
+    name: 'Strength',
+    meaning:
+      'การอดทนและควบคุมอารมณ์'
+  },
+
+  {
+    name: 'The Hermit',
+    meaning:
+      'การถอยห่างและคิดคนเดียว'
+  },
+
+  {
+    name: 'Wheel of Fortune',
+    meaning:
+      'ความสัมพันธ์กำลังเปลี่ยนแปลง'
+  },
+
+  {
+    name: 'Justice',
+    meaning:
+      'ผลของสิ่งที่เคยทำไว้'
+  },
+
+  {
+    name: 'The Hanged Man',
+    meaning:
+      'ความสัมพันธ์ที่หยุดนิ่ง'
   },
 
   {
     name: 'Death',
     meaning:
-      'การจบเพื่อเริ่มใหม่'
+      'การจบเพื่อเริ่มต้นใหม่'
+  },
+
+  {
+    name: 'Temperance',
+    meaning:
+      'การพยายามปรับตัวเข้าหากัน'
   },
 
   {
     name: 'The Devil',
     meaning:
-      'ความสัมพันธ์ที่ตัดไม่ขาด'
+      'ความสัมพันธ์ที่ตัดกันไม่ขาด'
+  },
+
+  {
+    name: 'The Tower',
+    meaning:
+      'การพังทลายและความจริงที่เจ็บ'
   },
 
   {
@@ -39,57 +117,71 @@ const cards = [
   },
 
   {
-    name: 'The Hermit',
+    name: 'The Moon',
     meaning:
-      'การถอยออกมาเงียบๆ'
+      'ความไม่ชัดเจนและความสับสน'
   },
 
   {
-    name: 'Justice',
+    name: 'The Sun',
     meaning:
-      'ความจริงและผลของการกระทำ'
+      'ความชัดเจนและความสุข'
   },
 
   {
-    name: 'The High Priestess',
+    name: 'Judgement',
     meaning:
-      'สิ่งที่ถูกซ่อนเอาไว้'
+      'การกลับมาและการตัดสินใจครั้งใหญ่'
   },
 
   {
-    name: 'Three of Swords',
+    name: 'The World',
     meaning:
-      'ความเสียใจและแผลในใจ'
+      'บทสรุปของความสัมพันธ์'
   }
 
 ];
 
-function randomCard() {
+const relationshipTypes = [
 
-  const card =
+  'Soulmate',
+  'Karmic',
+  'Twin Flame',
+  'Red Flag',
+  'Complicated'
 
-    cards[
-      Math.floor(
-        Math.random() *
-        cards.length
-      )
-    ];
+];
 
-  const reversed =
-    Math.random() < 0.35;
+function pickCards() {
 
-  return {
+  const shuffled =
 
-    ...card,
+    [...cards].sort(
+      () => 0.5 - Math.random()
+    );
 
-    reversed,
+  return [
 
-    title:
-      reversed
-      ? `${card.name} (กลับหัว)`
-      : card.name
+    shuffled[0],
+    shuffled[1],
+    shuffled[2]
 
-  };
+  ];
+
+}
+
+function bar(value) {
+
+  const filled =
+    Math.floor(value / 10);
+
+  return (
+
+    '█'.repeat(filled) +
+
+    '░'.repeat(10 - filled)
+
+  );
 
 }
 
@@ -130,14 +222,40 @@ module.exports = {
 
     try {
 
-      const card1 =
-        randomCard();
+      const [
+        past,
+        present,
+        future
+      ] = pickCards();
 
-      const card2 =
-        randomCard();
+      const relation =
 
-      const card3 =
-        randomCard();
+        relationshipTypes[
+          Math.floor(
+            Math.random() *
+            relationshipTypes.length
+          )
+        ];
+
+      const feelings =
+        Math.floor(
+          Math.random() * 41
+        ) + 55;
+
+      const comeback =
+        Math.floor(
+          Math.random() * 51
+        ) + 35;
+
+      const toxic =
+        Math.floor(
+          Math.random() * 70
+        ) + 10;
+
+      const obsession =
+        Math.floor(
+          Math.random() * 60
+        ) + 20;
 
       const response =
 
@@ -157,47 +275,52 @@ module.exports = {
 คุณคือ Nyx
 
 คุณไม่ใช่หมอดูแฟนตาซี
-แต่เป็นคนที่วิเคราะห์ความสัมพันธ์และอ่านความรู้สึกคนเก่งมาก
+แต่เป็นคนที่วิเคราะห์ความสัมพันธ์เก่งมาก
 
 หน้าที่:
 - วิเคราะห์จากไพ่ทั้ง 3 ใบ
 - วิเคราะห์ความสัมพันธ์แบบตรงๆ
 - วิเคราะห์สิ่งที่อีกฝ่ายกำลังคิด
-- วิเคราะห์ปัญหาจริงของความสัมพันธ์
+- วิเคราะห์ปัญหาจริง
 - วิเคราะห์สิ่งที่ผู้ถามยังไม่ยอมรับ
 
 กฎ:
 - พูดเหมือนคนจริง
 - อ่านง่าย
-- ไม่ต้องใช้คำสวยเกินไป
-- ไม่ต้องเบียว
-- ไม่ต้องพูดเรื่องจักรวาล
+- ไม่ต้องใช้คำเวอร์
 - ไม่ต้องโลกสวย
-- บางครั้งให้พูดแรงได้
-- ให้เหมือนนักจิตวิทยาความสัมพันธ์
-- ตอบประมาณ 5-8 บรรทัด
+- ถ้าความสัมพันธ์แย่ให้พูดตรงๆ
+- ถ้าอีกฝ่าย toxic ให้พูดตรงๆ
+- อย่าตอบกว้างๆ
+- ให้เหมือนคนที่ดูคนออกจริงๆ
+- ตอบประมาณ 6-10 บรรทัด
 
-ตัวอย่าง:
+สำคัญ:
+- วิเคราะห์ให้เฉพาะเจาะจง
+- บอกปัญหาหลักของความสัมพันธ์
+- วิเคราะห์พฤติกรรมอีกฝ่าย
+- ท้ายคำตอบให้สรุปตรงๆว่าควรไปต่อไหม
 
-"เขาไม่ได้หมดความรู้สึก
-แต่เขาเริ่มเหนื่อยกับความสัมพันธ์นี้"
+ประเภทความสัมพันธ์:
+${relation}
 
-"ปัญหาคืออีกฝ่ายไม่เคยพูดตรงๆ
-แล้วปล่อยให้ความเงียบทำลายทุกอย่าง"
+[อดีต]
+${past.name}
+${past.meaning}
 
-"ลึกๆแล้วเขายังสนใจอยู่
-แต่ตอนนี้เขาเลือกตัวเองมากกว่า"
+[ปัจจุบัน]
+${present.name}
+${present.meaning}
 
-ไพ่ที่เปิดได้:
+[อนาคต]
+${future.name}
+${future.meaning}
 
-1. ${card1.title}
-ความหมาย: ${card1.meaning}
-
-2. ${card2.title}
-ความหมาย: ${card2.meaning}
-
-3. ${card3.title}
-ความหมาย: ${card3.meaning}
+ค่าความสัมพันธ์:
+ความคิดถึง ${feelings}%
+โอกาสกลับมา ${comeback}%
+ความ Toxic ${toxic}%
+ความหมกมุ่น ${obsession}%
 
 `
 
@@ -215,7 +338,7 @@ module.exports = {
 
           temperature: 0.7,
 
-          max_tokens: 250
+          max_tokens: 320
 
         });
 
@@ -223,11 +346,20 @@ module.exports = {
         response.choices[0]
           .message.content;
 
+      let color =
+        '#202225';
+
+      if (toxic >= 70)
+        color = '#7a1010';
+
+      if (feelings >= 85)
+        color = '#52206b';
+
       const embed =
 
         new EmbedBuilder()
 
-          .setColor('#1f1f1f')
+          .setColor(color)
 
           .setTitle(
             '🃏 วิเคราะห์ไพ่ทาโร่'
@@ -238,23 +370,57 @@ module.exports = {
           .addFields(
 
             {
-              name: 'ใบที่ 1',
+              name: '🧩 ความสัมพันธ์',
+              value: relation,
+              inline: true
+            },
+
+            {
+              name: '💔 ความคิดถึง',
               value:
-                `${card1.title}\n${card1.meaning}`,
+                `${bar(feelings)} ${feelings}%`,
               inline: false
             },
 
             {
-              name: 'ใบที่ 2',
+              name: '🕯️ โอกาสกลับมา',
               value:
-                `${card2.title}\n${card2.meaning}`,
+                `${bar(comeback)} ${comeback}%`,
               inline: false
             },
 
             {
-              name: 'ใบที่ 3',
+              name: '🚩 Toxic',
               value:
-                `${card3.title}\n${card3.meaning}`,
+                `${bar(toxic)} ${toxic}%`,
+              inline: false
+            },
+
+            {
+              name: '🔥 ความหมกมุ่น',
+              value:
+                `${bar(obsession)} ${obsession}%`,
+              inline: false
+            },
+
+            {
+              name: '🕰️ อดีต',
+              value:
+                `${past.name}\n${past.meaning}`,
+              inline: false
+            },
+
+            {
+              name: '⚡ ปัจจุบัน',
+              value:
+                `${present.name}\n${present.meaning}`,
+              inline: false
+            },
+
+            {
+              name: '🔮 อนาคต',
+              value:
+                `${future.name}\n${future.meaning}`,
               inline: false
             }
 
@@ -281,7 +447,7 @@ module.exports = {
 
       await interaction.editReply(
 
-        'ตอนนี้ยังวิเคราะห์ความสัมพันธ์นี้ไม่ชัดพอ'
+        'ตอนนี้ยังอ่านความสัมพันธ์นี้ไม่ออก'
 
       );
 
