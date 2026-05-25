@@ -11,9 +11,11 @@ const {
 } = require('discord.js');
 
 const client = new Client({
+
   intents: [
     GatewayIntentBits.Guilds
   ]
+
 });
 
 client.commands =
@@ -43,11 +45,12 @@ for (const file of commandFiles) {
 
 }
 
-const rest = new REST({
-  version: '10'
-}).setToken(
-  process.env.DISCORD_TOKEN
-);
+const rest =
+  new REST({
+    version: '10'
+  }).setToken(
+    process.env.DISCORD_TOKEN
+  );
 
 (async () => {
 
@@ -79,16 +82,20 @@ const rest = new REST({
 
 })();
 
-client.once('clientReady', () => {
+client.once(
+  'clientReady',
+  () => {
 
-  console.log(
-    `${client.user.tag} ออนไลน์แล้ว`
-  );
+    console.log(
+      `${client.user.tag} ออนไลน์แล้ว`
+    );
 
-});
+  }
+);
 
 client.on(
   'interactionCreate',
+
   async interaction => {
 
     if (
@@ -115,6 +122,16 @@ client.on(
     }
 
   }
+);
+
+process.on(
+  'unhandledRejection',
+  console.error
+);
+
+process.on(
+  'uncaughtException',
+  console.error
 );
 
 client.login(
