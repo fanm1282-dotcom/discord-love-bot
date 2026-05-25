@@ -1,19 +1,42 @@
 const OpenAI = require("openai");
 
-// OpenRouter client (ใช้ SDK ของ openai แต่ชี้ baseURL ไป openrouter)
+// OpenRouter client
 const client = new OpenAI({
   apiKey: process.env.OPENROUTER_API_KEY,
   baseURL: "https://openrouter.ai/api/v1",
 });
 
-// 🔥 MODEL LIST (fallback กันล่ม)
+// 🔥 โมเดล fallback (ของจริงที่ยังใช้ได้บ่อย)
 const MODELS = [
-  "openchat/openchat-3.5-0106",          // stable ฟรี
-  "huggingfaceh4/zephyr-7b-beta",       // ฟรีอีกตัว
-  "mistralai/mistral-7b-instruct",      // บางช่วงใช้ได้ (ไม่มี :free แล้ว)
+  "openchat/openchat-3.5-0106",
+  "huggingfaceh4/zephyr-7b-beta",
+  "mistralai/mistral-7b-instruct",
 ];
 
-async function callOpenRouter(model, prompt) {
+// ===============================
+// 🧼 CLEAN INPUT (กัน 400 error)
+// ===============================
+function normalizePrompt(input) {
+  if (!input) return "hello";
+
+  if (typeof input === "string") return input;
+
+  if (typeof input === "object") {
+    return (
+      input.content ||
+      input.text ||
+      input.message ||
+      JSON.stringify(input)
+    );
+  }
+
+  return String(input);
+}
+
+// ===============================
+// 🧠 CALL OPENROUTER
+// ===============================
+async function callModel(model, prompt) {
   return await client.chat.completions.create({
     model,
     messages: [
@@ -30,30 +53,42 @@ async function callOpenRouter(model, prompt) {
   });
 }
 
-// 🔥 MAIN FUNCTION (ตัวที่ bot เรียก)
-async function askLoveAI(prompt) {
+// ===============================
+// 🚀 MAIN FUNCTION
+// ===============================
+async function askLoveAI(input) {
+  const prompt = normalizePrompt(input);
+
+  // กันค่าว่าง
+  if (!prompt || prompt.trim().length === 0) {
+    return "ไม่มีข้อความให้ตอบ";
+  }
+
   let lastError = null;
 
   for (const model of MODELS) {
     try {
       console.log(`[AI] Trying model: ${model}`);
 
-      const res = await callOpenRouter(model, prompt);
+      const res = await callModel(model, prompt);
 
       const text = res?.choices?.[0]?.message?.content;
 
-      if (!text) throw new Error("Empty response");
+      if (!text || typeof text !== "string") {
+        throw new Error("Invalid AI response");
+      }
 
       return text;
     } catch (err) {
-      console.error(`[AI] Model failed: ${model}`, err.message);
+      console.error(`[AI] Failed model: ${model}`, err.message);
       lastError = err;
       continue;
     }
   }
 
   console.error("ALL MODELS FAILED:", lastError);
-  return "ตอนนี้ AI ใช้งานไม่ได้ ลองใหม่อีกครั้งนะ";
+
+  return "❌ AI ใช้งานไม่ได้ตอนนี้ ลองใหม่อีกครั้ง";
 }
 
 module.exports = {
