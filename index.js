@@ -1,15 +1,13 @@
 require('dotenv').config();
 
-console.log('INDEX โหลดแล้ว');
+const fs = require('fs');
+const path = require('path');
 
 const {
   Client,
+  Collection,
   GatewayIntentBits
 } = require('discord.js');
-
-const {
-  askLoveAI
-} = require('./utils/ai');
 
 const client = new Client({
   intents: [
@@ -17,45 +15,73 @@ const client = new Client({
   ]
 });
 
-client.once('ready', async () => {
+client.commands =
+  new Collection();
 
-  console.log(
-    `${client.user.tag} ออนไลน์แล้ว`
+const commandsPath =
+  path.join(
+    __dirname,
+    'commands'
   );
 
-  console.log(
-    'API KEY:',
-    process.env.OPENROUTER_API_KEY
-      ? 'มี'
-      : 'ไม่มี'
+const commandFiles =
+  fs.readdirSync(commandsPath)
+    .filter(file =>
+      file.endsWith('.js')
+    );
+
+for (const file of commandFiles) {
+
+  const command =
+    require(
+      `./commands/${file}`
+    );
+
+  client.commands.set(
+    command.data.name,
+    command
+  );
+}
+
+const eventsPath =
+  path.join(
+    __dirname,
+    'events'
   );
 
-  try {
+const eventFiles =
+  fs.readdirSync(eventsPath)
+    .filter(file =>
+      file.endsWith('.js')
+    );
 
-    console.log('เริ่มยิง AI');
+for (const file of eventFiles) {
 
-    const result =
-      await askLoveAI({
-        status: 'คนคุย',
-        concern: 'กลัวเขาหมดใจ',
-        behavior:
-          'ตอบช้าลงแต่ยังทักมา',
-        question:
-          'ควรไปต่อไหม'
-      });
+  const event =
+    require(
+      `./events/${file}`
+    );
 
-    console.log('AI ตอบแล้ว');
-    console.log(result);
+  client.on(
+    event.name,
+    (...args) =>
+      event.execute(
+        ...args,
+        client
+      )
+  );
+}
 
-  } catch (err) {
+client.once(
+  'ready',
+  () => {
 
-    console.error(
-      'AI ERROR:',
-      err
+    console.log(
+      `${client.user.tag} ออนไลน์แล้ว`
     );
 
   }
-});
+);
 
 client.login(
   process.env.DISCORD_TOKEN
