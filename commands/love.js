@@ -48,7 +48,7 @@ module.exports = {
         await openai.chat.completions.create({
 
           model:
-            'meta-llama/llama-3.3-8b-instruct:free',
+            'openai/gpt-oss-20b:free',
 
           messages: [
 
