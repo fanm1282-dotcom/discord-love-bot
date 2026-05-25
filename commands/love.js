@@ -1,125 +1,76 @@
 const {
   SlashCommandBuilder,
-  ModalBuilder,
-  TextInputBuilder,
-  TextInputStyle,
-  ActionRowBuilder
+  EmbedBuilder
 } = require('discord.js');
+
+const model =
+  require('../utils/gemini');
 
 module.exports = {
 
   data:
     new SlashCommandBuilder()
+      .setName('love')
+      .setDescription('ดูดวงความรัก')
 
-      .setName(
-        'ดูดวง'
-      )
-
-      .setDescription(
-        'ดูดวงความรัก'
+      .addStringOption(option =>
+        option
+          .setName('question')
+          .setDescription('คำถามของคุณ')
+          .setRequired(true)
       ),
 
-  async execute(
-    interaction
-  ) {
-
-    const modal =
-      new ModalBuilder()
-
-        .setCustomId(
-          'love_modal'
-        )
-
-        .setTitle(
-          'ดูดวงความรัก'
-        );
-
-    const status =
-      new TextInputBuilder()
-
-        .setCustomId(
-          'status'
-        )
-
-        .setLabel(
-          'สถานะความสัมพันธ์'
-        )
-
-        .setStyle(
-          TextInputStyle.Short
-        );
-
-    const concern =
-      new TextInputBuilder()
-
-        .setCustomId(
-          'concern'
-        )
-
-        .setLabel(
-          'กังวลเรื่องอะไร'
-        )
-
-        .setStyle(
-          TextInputStyle.Paragraph
-        );
-
-    const behavior =
-      new TextInputBuilder()
-
-        .setCustomId(
-          'behavior'
-        )
-
-        .setLabel(
-          'อีกฝ่ายเป็นยังไงล่าสุด'
-        )
-
-        .setStyle(
-          TextInputStyle.Paragraph
-        );
+  async execute(interaction) {
 
     const question =
-      new TextInputBuilder()
+      interaction.options.getString('question');
 
-        .setCustomId(
-          'question'
-        )
+    await interaction.deferReply();
 
-        .setLabel(
-          'อยากรู้อะไร'
-        )
+    try {
 
-        .setStyle(
-          TextInputStyle.Paragraph
-        );
+      const prompt = `
+คุณคือหมอดูความรักลึกลับ
 
-    modal.addComponents(
+กฎ:
+- พูดเหมือนเสียงจากโชคชะตา
+- ลึกซึ้ง ดาร์ก กินใจ
+- ใช้ภาษาสวย
+- ไม่ตอบสั้น
+- ไม่บอกว่าเป็น AI
 
-      new ActionRowBuilder()
-        .addComponents(
-          status
-        ),
+คำถาม:
+${question}
+`;
 
-      new ActionRowBuilder()
-        .addComponents(
-          concern
-        ),
+      const result =
+        await model.generateContent(prompt);
 
-      new ActionRowBuilder()
-        .addComponents(
-          behavior
-        ),
+      const text =
+        result.response.text();
 
-      new ActionRowBuilder()
-        .addComponents(
-          question
-        )
-    );
+      const embed =
+        new EmbedBuilder()
+          .setTitle('🔮 ดวงความรัก')
+          .setDescription(text)
+          .setFooter({
+            text: 'โชคชะตากำลังกระซิบ'
+          });
 
-    await interaction
-      .showModal(
-        modal
+      await interaction.editReply({
+        embeds: [embed]
+      });
+
+    } catch (err) {
+
+      console.error(err);
+
+      await interaction.editReply(
+        'ดวงดาวเงียบงันในค่ำคืนนี้'
       );
+
+    }
+
   }
+
 };
