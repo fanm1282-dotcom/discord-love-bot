@@ -82,15 +82,22 @@ const commandFolders =
 
 for (const folder of commandFolders) {
 
-  const commandsPath =
+  const folderPath =
     path.join(
       foldersPath,
       folder
     );
 
+  // ข้ามถ้าไม่ใช่โฟลเดอร์
+  if (
+    !fs
+      .lstatSync(folderPath)
+      .isDirectory()
+  ) continue;
+
   const commandFiles =
     fs.readdirSync(
-      commandsPath
+      folderPath
     )
 
     .filter(file =>
@@ -101,7 +108,7 @@ for (const folder of commandFolders) {
 
     const filePath =
       path.join(
-        commandsPath,
+        folderPath,
         file
       );
 
@@ -234,7 +241,6 @@ client.on(
 
   async interaction => {
 
-    // Slash Command
     if (
       interaction.isChatInputCommand()
     ) {
