@@ -139,23 +139,14 @@ function getAiText(user) {
   let aiTexts = [
 
     '🤖 คาสิโนไม่เคยขาดทุน',
-
     '🤖 ดวงมึงกากจัด',
-
     '🤖 มาอีกตาไหม',
-
     '🤖 เงินมึงหอมดี',
-
     '🤖 กูอ่านไพ่มึงออก',
-
     '🤖 วันนี้กูดวงแรง',
-
     '🤖 เอาเงินมา',
-
     '🤖 กูคือเจ้ามือ',
-
     '🤖 รีบเล่น',
-
     '🤖 วันนี้มึงไม่น่ารอด'
 
   ];
@@ -166,11 +157,8 @@ function getAiText(user) {
     aiTexts.push(
 
       '🤖 อ้าว มึงอีกแล้วเหรอ',
-
       '🤖 วันนี้ยังจะเสียอีก?',
-
       '🤖 กูเริ่มจำหน้ามึงได้ละ',
-
       '🤖 มึงนี่เล่นทุกวันเลยนะ'
 
     );
@@ -183,11 +171,8 @@ function getAiText(user) {
     aiTexts.push(
 
       '🤖 คาสิโนรักมึงมาก',
-
       '🤖 เงินมึงเข้ากระเป๋ากูหมดละ',
-
       '🤖 มึงนี่สายเปย์จริงๆ',
-
       '🤖 ขอบคุณที่บริจาค'
 
     );
@@ -200,11 +185,8 @@ function getAiText(user) {
     aiTexts.push(
 
       '🤖 กูเริ่มไม่ชอบหน้ามึงละ',
-
       '🤖 มึงโกงปะเนี่ย',
-
       '🤖 วันนี้ดวงมึงแรงเกิน',
-
       '🤖 กูต้องเอาคืนมึง'
 
     );
@@ -220,7 +202,42 @@ function getAiText(user) {
 
 }
 
-async function runGame(interaction, bet) {
+async function sendGame(
+  interaction,
+  data
+) {
+
+  const payload = {
+
+    embeds: [data.embed],
+
+    components: data.components || [],
+
+    fetchReply: true
+
+  };
+
+  if (
+    interaction.replied ||
+    interaction.deferred
+  ) {
+
+    return await interaction.followUp(
+      payload
+    );
+
+  }
+
+  return await interaction.reply(
+    payload
+  );
+
+}
+
+async function runGame(
+  interaction,
+  bet
+) {
 
   const user =
     await getUser(
@@ -228,6 +245,22 @@ async function runGame(interaction, bet) {
     );
 
   if (user.money < bet) {
+
+    if (
+      interaction.replied ||
+      interaction.deferred
+    ) {
+
+      return interaction.followUp({
+
+        content:
+          '❌ เงินมึงไม่พอ',
+
+        ephemeral: true
+
+      });
+
+    }
 
     return interaction.reply({
 
@@ -272,7 +305,7 @@ async function runGame(interaction, bet) {
       aiCards
     );
 
-  // ป็อกจบเลย
+  // ไม่มีป็อก
   if (!playerPok && !aiPok) {
 
     const row =
@@ -328,15 +361,16 @@ ${bet.toLocaleString()}$
 `);
 
     const msg =
-      await interaction.reply({
+      await sendGame(
 
-        embeds: [embed],
+        interaction,
 
-        components: [row],
+        {
+          embed,
+          components: [row]
+        }
 
-        fetchReply: true
-
-      });
+      );
 
     const collector =
       msg.createMessageComponentCollector({
@@ -366,6 +400,30 @@ ${bet.toLocaleString()}$
             ephemeral: true
 
           });
+
+        }
+
+        // เล่นอีกครั้ง
+        if (
+          i.customId.startsWith(
+            'again_'
+          )
+        ) {
+
+          const replayBet =
+            parseInt(
+
+              i.customId
+                .split('_')[1]
+
+            );
+
+          await i.deferUpdate();
+
+          return runGame(
+            i,
+            replayBet
+          );
 
         }
 
@@ -805,13 +863,16 @@ ${updatedUser.casinoLose}
 ${updatedUser.money.toLocaleString()}$
 `);
 
-  await interaction.reply({
+  await sendGame(
 
-    embeds: [embed],
+    interaction,
 
-    components: [row]
+    {
+      embed,
+      components: [row]
+    }
 
-  });
+  );
 
 }
 
@@ -858,4 +919,5 @@ module.exports = {
     );
 
   }
+
 };
