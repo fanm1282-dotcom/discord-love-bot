@@ -241,6 +241,7 @@ client.on(
 
   async interaction => {
 
+    // Slash Commands
     if (
       interaction.isChatInputCommand()
     ) {
@@ -291,6 +292,52 @@ client.on(
           }
 
         } catch {}
+
+      }
+
+    }
+
+    // Buttons
+    if (
+      interaction.isButton()
+    ) {
+
+      // ปุ่มเล่นอีกครั้ง
+      if (
+        interaction.customId.startsWith(
+          'again_'
+        )
+      ) {
+
+        const bet =
+          parseInt(
+
+            interaction.customId
+              .split('_')[1]
+
+          );
+
+        const pokdeng =
+          client.commands.get(
+            'pokdeng'
+          );
+
+        if (!pokdeng) return;
+
+        try {
+
+          await pokdeng.executeReplay(
+
+            interaction,
+            bet
+
+          );
+
+        } catch (err) {
+
+          console.error(err);
+
+        }
 
       }
 
