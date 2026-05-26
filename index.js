@@ -69,71 +69,84 @@ mongoose.connect(
 
 const commands = [];
 
-const commandsPath =
+const foldersPath =
   path.join(
     __dirname,
     'commands'
   );
 
-const commandFiles =
-
+const commandFolders =
   fs.readdirSync(
-    commandsPath
-  )
-
-  .filter(file =>
-    file.endsWith('.js')
+    foldersPath
   );
 
-for (const file of commandFiles) {
+for (const folder of commandFolders) {
 
-  const filePath =
-
+  const commandsPath =
     path.join(
-      commandsPath,
-      file
+      foldersPath,
+      folder
     );
 
-  try {
+  const commandFiles =
+    fs.readdirSync(
+      commandsPath
+    )
 
-    const command =
-      require(filePath);
+    .filter(file =>
+      file.endsWith('.js')
+    );
 
-    if (
-      !command.data ||
-      !command.execute
-    ) {
+  for (const file of commandFiles) {
 
-      console.log(
-        `${file} โหลดไม่สำเร็จ`
+    const filePath =
+      path.join(
+        commandsPath,
+        file
       );
 
-      continue;
+    try {
+
+      const command =
+        require(filePath);
+
+      if (
+        !command.data ||
+        !command.execute
+      ) {
+
+        console.log(
+          `${file} โหลดไม่สำเร็จ`
+        );
+
+        continue;
+
+      }
+
+      client.commands.set(
+
+        command.data.name,
+        command
+
+      );
+
+      commands.push(
+        command.data.toJSON()
+      );
+
+      console.log(
+        `${file} โหลดสำเร็จ`
+      );
+
+    } catch (err) {
+
+      console.error(
+        `${file} ERROR`
+      );
+
+      console.error(err);
 
     }
-
-    client.commands.set(
-
-      command.data.name,
-      command
-
-    );
-
-    commands.push(
-      command.data.toJSON()
-    );
-
-    console.log(
-      `${file} โหลดสำเร็จ`
-    );
-
-  } catch (err) {
-
-    console.error(
-      `${file} ERROR`
-    );
-
-    console.error(err);
 
   }
 
@@ -221,56 +234,59 @@ client.on(
 
   async interaction => {
 
+    // Slash Command
     if (
-      !interaction.isChatInputCommand()
-    ) return;
+      interaction.isChatInputCommand()
+    ) {
 
-    const command =
+      const command =
 
-      client.commands.get(
-        interaction.commandName
-      );
+        client.commands.get(
+          interaction.commandName
+        );
 
-    if (!command) return;
-
-    try {
-
-      await command.execute(
-        interaction
-      );
-
-    } catch (err) {
-
-      console.error(err);
+      if (!command) return;
 
       try {
 
-        if (
-          interaction.replied ||
-          interaction.deferred
-        ) {
+        await command.execute(
+          interaction
+        );
 
-          await interaction.editReply({
+      } catch (err) {
 
-            content:
-              'เกิดข้อผิดพลาดในการใช้คำสั่ง'
+        console.error(err);
 
-          });
+        try {
 
-        } else {
+          if (
+            interaction.replied ||
+            interaction.deferred
+          ) {
 
-          await interaction.reply({
+            await interaction.editReply({
 
-            content:
-              'เกิดข้อผิดพลาดในการใช้คำสั่ง',
+              content:
+                'เกิดข้อผิดพลาดในการใช้คำสั่ง'
 
-            ephemeral: true
+            });
 
-          });
+          } else {
 
-        }
+            await interaction.reply({
 
-      } catch {}
+              content:
+                'เกิดข้อผิดพลาดในการใช้คำสั่ง',
+
+              ephemeral: true
+
+            });
+
+          }
+
+        } catch {}
+
+      }
 
     }
 
