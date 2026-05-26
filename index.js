@@ -326,7 +326,7 @@ client.on(
 
         try {
 
-          await pokdeng.executeReplay(
+          await pokdeng.replay(
 
             interaction,
             bet
