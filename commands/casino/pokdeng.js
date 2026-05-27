@@ -907,7 +907,7 @@ ${updatedUser.money.toLocaleString()}$
   });
 
 // 💬 เปิดแชทกับเจ้ามือ
-await interaction.followUp({
+await i.followUp({
 
   content:
     '💬 พิมพ์คุยกับเจ้ามือได้ 30 วิ'
@@ -930,23 +930,38 @@ chatCollector.on(
 
   async m => {
 
-    const aiReply =
-      await askCasinoAI(
-        user,
-        m.content
-      );
+    try {
 
-    await m.reply({
+      const aiReply =
+        await askCasinoAI(
+          user,
+          m.content
+        );
 
-      content:
-        `🤖 ${aiReply}`
+      await m.reply({
 
-    });
+        content:
+          `🤖 ${aiReply}`
+
+      });
+
+    } catch (err) {
+
+      console.log(err);
+
+      await m.reply({
+
+        content:
+          '🤖 AI พังละ'
+
+      });
+
+    }
 
   }
 
 );
-        
+
         // 🎴 collector เล่นอีกครั้ง
         const replayCollector =
           replayMsg.createMessageComponentCollector({
