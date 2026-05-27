@@ -973,7 +973,7 @@ const replayCollector =
 
             try {
 
-              await replayMsg.edit({
+              await i.message.edit({
 
                 components: []
 
