@@ -936,7 +936,7 @@ chatCollector.on(
         m.content
       );
 
-    await interaction.followUp({
+    await m.reply({
 
       content:
         `🤖 ${aiReply}`
