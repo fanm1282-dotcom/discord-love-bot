@@ -915,7 +915,7 @@ await interaction.followUp({
 });
 
 const chatCollector =
-  interaction.channel.createMessageCollector({
+  i.channel.createMessageCollector({
 
     filter: m =>
       m.author.id ===
