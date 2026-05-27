@@ -4,7 +4,7 @@ const {
 } = require('discord.js');
 
 const openai =
-  require('../utils/openai');
+  require('../../utils/openai');
 
 /* =========================
    COOLDOWN
