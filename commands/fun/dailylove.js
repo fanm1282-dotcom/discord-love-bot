@@ -7,10 +7,10 @@ const openai =
   require('../../utils/openai');
 
 const DailyLove =
-  require('../models/DailyLove');
+  require('../../models/DailyLove');
 
 const Streak =
-  require('../models/Streak');
+  require('../../models/Streak');
 
 /* =========================
    COOLDOWN
