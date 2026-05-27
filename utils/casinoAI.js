@@ -1,11 +1,9 @@
-// utils/casinoAI.js
-
 const openai =
   require('./openai');
 
 async function askCasinoAI(
   user,
-  resultType
+  message
 ) {
 
   try {
@@ -54,8 +52,8 @@ ${user.casinoWin}
 แพ้:
 ${user.casinoLose}
 
-ผลล่าสุด:
-${resultType}
+ข้อความผู้เล่น:
+${message}
 `
           }
 
