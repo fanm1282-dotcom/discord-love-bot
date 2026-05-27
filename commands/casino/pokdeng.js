@@ -312,21 +312,23 @@ async function runGame(
 
       });
 
-    // 🎴 ถ้ามาจาก replay button
+    // 🎴 replay จากปุ่ม
     if (
       interaction.isButton()
     ) {
 
+      await interaction.update({
+
+        embeds: [embed],
+
+        components: [
+          replayRow
+        ]
+
+      });
+
       const msg =
-        await interaction.message.edit({
-
-          embeds: [embed],
-
-          components: [
-            replayRow
-          ]
-
-        });
+        await interaction.fetchReply();
 
       return createGameCollector({
 
@@ -410,21 +412,23 @@ async function runGame(
 
   let msg;
 
-  // 🎴 replay มาจากปุ่ม
+  // 🎴 replay จากปุ่ม
   if (
     interaction.isButton()
   ) {
 
+    await interaction.update({
+
+      embeds: [embed],
+
+      components: [
+        gameRow
+      ]
+
+    });
+
     msg =
-      await interaction.message.edit({
-
-        embeds: [embed],
-
-        components: [
-          gameRow
-        ]
-
-      });
+      await interaction.fetchReply();
 
   }
 
