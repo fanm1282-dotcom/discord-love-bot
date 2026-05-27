@@ -902,8 +902,11 @@ ${updatedUser.money.toLocaleString()}$
 
   components: [
     playAgainRow
+  ]
 
-        // 🎴 collector เล่นอีกครั้ง
+});
+
+// 🎴 collector เล่นอีกครั้ง
 const replayCollector =
   i.message.createMessageComponentCollector({
 
