@@ -1122,24 +1122,37 @@ ${updatedUser.money.toLocaleString()}$
   const row =
     new ActionRowBuilder()
 
-      .addComponents(
+.addComponents(
 
-        new ButtonBuilder()
+  new ButtonBuilder()
 
-          .setCustomId(
-            `again_${bet}`
-          )
+    .setCustomId(
+      `again_${bet}`
+    )
 
-          .setLabel(
-            '🎴 เล่นอีกครั้ง'
-          )
+    .setLabel(
+      '🎴 เล่นอีกครั้ง'
+    )
 
-          .setStyle(
-            ButtonStyle.Primary
-          )
+    .setStyle(
+      ButtonStyle.Primary
+    ),
 
-      );
+  new ButtonBuilder()
 
+    .setCustomId(
+      'chat_ai'
+    )
+
+    .setLabel(
+      '💬 คุยกับเจ้ามือ'
+    )
+
+    .setStyle(
+      ButtonStyle.Secondary
+    )
+
+);
   const embed =
     new EmbedBuilder()
 
