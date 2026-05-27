@@ -387,6 +387,7 @@ async function createGameCollector({
           bet
         );
 
+      // 🔄 อัปเดต
       await i.update({
 
         embeds: [embed],
@@ -397,11 +398,97 @@ async function createGameCollector({
 
       });
 
+      // =========================
+      // 🎴 REPLAY COLLECTOR
+      // =========================
+
+      const replayCollector =
+        i.message.createMessageComponentCollector({
+
+          componentType:
+            ComponentType.Button,
+
+          time: 30000
+
+        });
+
+      replayCollector.on(
+        'collect',
+
+        async btn => {
+
+          // ❌ คนอื่นกด
+          if (
+            btn.user.id !==
+            interaction.user.id
+          ) {
+
+            return btn.reply({
+
+              content:
+                '❌ ไม่ใช่เกมมึง',
+
+              ephemeral: true
+
+            });
+
+          }
+
+          // 🎴 เล่นอีกครั้ง
+          if (
+            btn.customId.startsWith(
+              'again_'
+            )
+          ) {
+
+            const replayBet =
+              parseInt(
+
+                btn.customId
+                  .split('_')[1]
+
+              );
+
+            await btn.deferUpdate();
+
+            replayCollector.stop();
+
+            return runGame(
+              btn,
+              replayBet
+            );
+
+          }
+
+        }
+
+      );
+
+      // ⏰ หมดเวลา
+      replayCollector.on(
+        'end',
+
+        async () => {
+
+          try {
+
+            await i.message.edit({
+
+              components: []
+
+            });
+
+          } catch {}
+
+        }
+
+      );
+
     }
 
   );
 
-  // ⏰ หมดเวลา
+  // ⏰ collector หลักหมดเวลา
   collector.on(
     'end',
 
