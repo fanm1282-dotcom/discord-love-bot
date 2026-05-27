@@ -904,16 +904,15 @@ ${updatedUser.money.toLocaleString()}$
     playAgainRow
 
         // 🎴 collector เล่นอีกครั้ง
-        const replayCollector =
-          replayMsg.createMessageComponentCollector({
+const replayCollector =
+  i.message.createMessageComponentCollector({
 
-            componentType:
-              ComponentType.Button,
+    componentType:
+      ComponentType.Button,
 
-            time: 30000
+    time: 30000
 
-          });
-
+  });
         replayCollector.on(
           'collect',
 
