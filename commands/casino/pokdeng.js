@@ -146,7 +146,23 @@ function getAiText(
       '🤖 พร้อมเสียยัง',
       '🤖 ขอเงินหน่อย',
       '🤖 ตานี้กูเอาจริง',
-      '🤖 อย่าร้องทีหลังนะ'
+      '🤖 อย่าร้องทีหลังนะ',
+      '🤖 วันนี้กูดวงแรง',
+      '🤖 รีบๆเล่น กูรอรวยอยู่',
+      '🤖 มึงดูทรงจะหมดตัว',
+      '🤖 ไพ่ในมือกูร้อนละ',
+      '🤖 อย่าเพิ่งร้องนะ',
+      '🤖 กูได้กลิ่นเงิน',
+      '🤖 เข้ามาแล้วออกยากนะ',
+      '🤖 วันนี้ใครจะหมดตัวเอ่ย',
+      '🤖 ดวงมึงพร้อมยัง',
+      '🤖 ตานี้มีน้ำตาแน่',
+      '🤖 กูจะสูบเงินมึง',
+      '🤖 ขอให้มึงโชคซวย',
+      '🤖 เริ่มเลย กูหิวเงิน',
+      '🤖 กาสิโนเปิดทำงานแล้ว',
+      '🤖 ไพ่กูเริ่มสั่นละ',
+      '🤖 อย่าหวังว่าจะชนะง่ายๆ'
 
     ],
 
@@ -155,7 +171,23 @@ function getAiText(
       '🤖 เหี้ยเอ้ย ได้ไงวะ',
       '🤖 ฟลุ๊คจัด',
       '🤖 ตาหน้ากูเอาคืน',
-      '🤖 วันนี้ดวงมึงแรง'
+      '🤖 วันนี้ดวงมึงแรง',
+      '🤖 มึงแอบโกงปะเนี่ย',
+      '🤖 เออ ตานี้มึงเอาไป',
+      '🤖 ไพ่กูเน่าชิบหาย',
+      '🤖 อย่าเหลิง เดี๋ยวแตก',
+      '🤖 กูเริ่มไม่ชอบหน้ามึงละ',
+      '🤖 มึงนี่ดวงหมาจริง',
+      '🤖 เดี๋ยวกูถอนทุนคืน',
+      '🤖 ตานี้กูพลาดเอง',
+      '🤖 มึงมันสายฟลุ๊ค',
+      '🤖 วันนี้มึงบุญเยอะ',
+      '🤖 เออ ชนะก็ชนะ',
+      '🤖 อย่าคิดว่ากูยอม',
+      '🤖 กูจะจำตานี้ไว้',
+      '🤖 ดวงมึงยังไม่หมดสินะ',
+      '🤖 ได้ใจใหญ่ละมั้ง',
+      '🤖 ชนะแล้วอย่าปากดี'
 
     ],
 
@@ -164,7 +196,23 @@ function getAiText(
       '🤖 เงินเข้ากระเป๋ากูละ',
       '🤖 กูบอกแล้ว',
       '🤖 กลับไปฟาร์มเงินมา',
-      '🤖 คาสิโนรักมึง'
+      '🤖 คาสิโนรักมึง',
+      '🤖 ตู้นี้แดกเรียบ',
+      '🤖 มึงนี่สายเติม',
+      '🤖 เงินหอมจัด',
+      '🤖 กูรับทรัพย์',
+      '🤖 ขอบคุณที่บริจาค',
+      '🤖 มึงนี่ลูกค้าชั้นดี',
+      '🤖 จะเล่นอีกก็ได้นะ',
+      '🤖 แตกอีกละ',
+      '🤖 หมดตัวเมื่อไหร่บอก',
+      '🤖 ไพ่กูโหดเกิน',
+      '🤖 กลับบ้านมือเปล่าเลย',
+      '🤖 วันนี้กูไม่ปล่อย',
+      '🤖 เห็นละสงสารกระเป๋ามึง',
+      '🤖 ตานี้โคตรฟรี',
+      '🤖 ดวงกากเกิน',
+      '🤖 กาสิโนไม่เคยปรานี'
 
     ],
 
@@ -173,19 +221,83 @@ function getAiText(
       '🤖 รอดตัวไป',
       '🤖 ยังไม่จบ',
       '🤖 ตานี้ไม่นับ',
-      '🤖 เสมอเฉย'
+      '🤖 เสมอเฉย',
+      '🤖 เกือบละ',
+      '🤖 ยังสูสี',
+      '🤖 ตึงใช้ได้',
+      '🤖 กูนึกว่ามึงจะแตก',
+      '🤖 ดวงยังเท่ากัน',
+      '🤖 ไม่มีใครได้ใคร',
+      '🤖 ยังไม่ถึงเวลาของใคร',
+      '🤖 เอาใหม่อีกรอบไหม',
+      '🤖 เกมยังไม่สนุกพอ',
+      '🤖 ตานี้อุ่นเครื่อง',
+      '🤖 ยังไม่มีผู้ชนะ',
+      '🤖 กำลังมันส์',
+      '🤖 ลมหายใจรวยยังอยู่',
+      '🤖 อีกตาดีกว่า',
+      '🤖 สูสีกว่าที่คิด',
+      '🤖 กูยังไม่พอใจผลนี้'
 
     ]
 
   };
 
+  // เล่นบ่อย
   if (user.casinoPlayed >= 10) {
 
     texts.start.push(
 
       '🤖 อ้าว มึงอีกแล้ว',
       '🤖 วันนี้ยังไม่เข็ด?',
-      '🤖 กูจำมึงได้ละ'
+      '🤖 กูจำมึงได้ละ',
+      '🤖 เมื่อวานก็หมดตัวไม่ใช่เหรอ',
+      '🤖 มึงนี่เข้าบ่อยจัด',
+      '🤖 หน้าเดิมอีกละ',
+      '🤖 มาหาเงินให้กูอีก?',
+      '🤖 กาสิโนคือบ้านมึงปะ',
+      '🤖 เล่นจนกูจำชื่อได้ละ',
+      '🤖 จะเอาเงินมาลงอีกเท่าไหร่'
+
+    );
+
+  }
+
+  // แพ้เยอะ
+  if (user.casinoLose >= 15) {
+
+    texts.lose.push(
+
+      '🤖 กระเป๋ามึงเบาแน่วันนี้',
+      '🤖 ยิ่งเล่นยิ่งจน',
+      '🤖 กูรักลูกค้าแบบมึง',
+      '🤖 มึงนี่ ATM เดินได้',
+      '🤖 เติมมาอีกนะ',
+      '🤖 เงินมึงเข้ากาสิโนหมดละ',
+      '🤖 เห็นยอดเงินละชื่นใจ',
+      '🤖 มึงนี่เสียเป็นอาชีพ',
+      '🤖 วันนี้จะหมดอีกกี่รอบ',
+      '🤖 เสียจนกูสงสาร'
+
+    );
+
+  }
+
+  // ชนะเยอะ
+  if (user.casinoWin >= 10) {
+
+    texts.win.push(
+
+      '🤖 มึงชนะบ่อยไปละ',
+      '🤖 เดี๋ยวกูจับโกงเลย',
+      '🤖 วันนี้มึงเกินไปละ',
+      '🤖 ไพ่แม่งเข้าข้างมึง',
+      '🤖 กูเริ่มหัวร้อนละ',
+      '🤖 มึงนี่ตัวปัญหา',
+      '🤖 เดี๋ยวกูเอาคืนหนักๆ',
+      '🤖 อย่าให้กูพลิกนะ',
+      '🤖 ดวงมึงเวอร์เกิน',
+      '🤖 ตาหน้ากูไม่พลาด'
 
     );
 
@@ -200,7 +312,7 @@ function getAiText(
 
   ];
 
-}
+      }
 
 async function sendGame(
   interaction,
@@ -217,7 +329,6 @@ async function sendGame(
 
   };
 
-  // ปุ่ม
   if (
     interaction.isButton()
   ) {
@@ -228,9 +339,106 @@ async function sendGame(
 
   }
 
-  // Slash Command
   return await interaction.reply(
     payload
+  );
+
+}
+
+async function createReplayCollector(
+  msg,
+  interaction,
+  bet
+) {
+
+  const collector =
+    msg.createMessageComponentCollector({
+
+      componentType:
+        ComponentType.Button,
+
+      time: 30000
+
+    });
+
+  collector.on(
+    'collect',
+
+    async i => {
+
+      if (
+        i.user.id !==
+        interaction.user.id
+      ) {
+
+        return i.reply({
+
+          content:
+            '❌ ไม่ใช่เกมมึง',
+
+          ephemeral: true
+
+        });
+
+      }
+
+      // 🎴 เล่นอีกครั้ง
+      if (
+        i.customId.startsWith(
+          'again_'
+        )
+      ) {
+
+        const replayBet =
+          parseInt(
+
+            i.customId
+              .split('_')[1]
+
+          );
+
+        await i.deferUpdate();
+
+        collector.stop();
+
+        return runGame(
+          i,
+          replayBet
+        );
+
+      }
+
+      // ปิด collector รอบเก่า
+      collector.stop();
+
+      // 🟢 จั่ว
+      const playerCards =
+        i.playerCards || [];
+
+      const aiCards =
+        i.aiCards || [];
+
+    }
+
+  );
+
+  collector.on(
+    'end',
+
+    async () => {
+
+      try {
+
+        await msg.edit({
+
+          components: []
+
+        });
+
+      } catch {}
+
+    }
+
   );
 
 }
@@ -423,7 +631,6 @@ ${bet.toLocaleString()}$
 
         }
 
-        // ปิด collector รอบเก่า
         collector.stop();
 
         // 🟢 จั่ว
@@ -617,7 +824,6 @@ ${bet.toLocaleString()}$
             interaction.user.id
           );
 
-        // 🎴 ปุ่มเล่นอีกครั้ง
         const playAgainRow =
           new ActionRowBuilder()
 
@@ -639,7 +845,6 @@ ${bet.toLocaleString()}$
 
             );
 
-        // 📦 Embed
         const finalEmbed =
           new EmbedBuilder()
 
@@ -670,22 +875,103 @@ ${result}
 ${updatedUser.money.toLocaleString()}$
 `);
 
-        // 🔄 อัปเดตข้อความเดิม
-        await i.update({
+        const replayMsg =
+          await i.update({
 
-          embeds: [finalEmbed],
+            embeds: [finalEmbed],
 
-          components: [
-            playAgainRow
-          ]
+            components: [
+              playAgainRow
+            ],
 
-        });
+            fetchReply: true
+
+          });
+
+        // 🎴 collector เล่นอีกครั้ง
+        const replayCollector =
+          replayMsg.createMessageComponentCollector({
+
+            componentType:
+              ComponentType.Button,
+
+            time: 30000
+
+          });
+
+        replayCollector.on(
+          'collect',
+
+          async btn => {
+
+            if (
+              btn.user.id !==
+              interaction.user.id
+            ) {
+
+              return btn.reply({
+
+                content:
+                  '❌ ไม่ใช่เกมมึง',
+
+                ephemeral: true
+
+              });
+
+            }
+
+            if (
+              btn.customId.startsWith(
+                'again_'
+              )
+            ) {
+
+              const replayBet =
+                parseInt(
+
+                  btn.customId
+                    .split('_')[1]
+
+                );
+
+              await btn.deferUpdate();
+
+              replayCollector.stop();
+
+              return runGame(
+                btn,
+                replayBet
+              );
+
+            }
+
+          }
+
+        );
+
+        replayCollector.on(
+          'end',
+
+          async () => {
+
+            try {
+
+              await replayMsg.edit({
+
+                components: []
+
+              });
+
+            } catch {}
+
+          }
+
+        );
 
       }
 
     );
 
-    // ⏰ หมดเวลา → ลบปุ่ม
     collector.on(
       'end',
 
@@ -863,13 +1149,94 @@ ${result}
 ${updatedUser.money.toLocaleString()}$
 `);
 
-  await sendGame(
+  const msg =
+    await sendGame(
 
-    interaction,
+      interaction,
 
-    {
-      embed,
-      components: [row]
+      {
+        embed,
+        components: [row]
+      }
+
+    );
+
+  // 🎴 replay สำหรับป็อก
+  const collector =
+    msg.createMessageComponentCollector({
+
+      componentType:
+        ComponentType.Button,
+
+      time: 30000
+
+    });
+
+  collector.on(
+    'collect',
+
+    async i => {
+
+      if (
+        i.user.id !==
+        interaction.user.id
+      ) {
+
+        return i.reply({
+
+          content:
+            '❌ ไม่ใช่เกมมึง',
+
+          ephemeral: true
+
+        });
+
+      }
+
+      if (
+        i.customId.startsWith(
+          'again_'
+        )
+      ) {
+
+        const replayBet =
+          parseInt(
+
+            i.customId
+              .split('_')[1]
+
+          );
+
+        await i.deferUpdate();
+
+        collector.stop();
+
+        return runGame(
+          i,
+          replayBet
+        );
+
+      }
+
+    }
+
+  );
+
+  collector.on(
+    'end',
+
+    async () => {
+
+      try {
+
+        await msg.edit({
+
+          components: []
+
+        });
+
+      } catch {}
+
     }
 
   );
@@ -899,7 +1266,7 @@ module.exports = {
 
     if (
       bet < 100 ||
-      bet > 5000
+      bet > 2000
     ) {
 
       return interaction.reply({
