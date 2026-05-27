@@ -397,7 +397,7 @@ ${bet.toLocaleString()}$
 
         }
 
-        // เล่นอีกครั้ง
+        // 🎴 เล่นอีกครั้ง
         if (
           i.customId.startsWith(
             'again_'
@@ -414,6 +414,8 @@ ${bet.toLocaleString()}$
 
           await i.deferUpdate();
 
+          collector.stop();
+
           return runGame(
             i,
             replayBet
@@ -421,9 +423,10 @@ ${bet.toLocaleString()}$
 
         }
 
+        // ปิด collector รอบเก่า
         collector.stop();
 
-        // จั่ว
+        // 🟢 จั่ว
         if (
           i.customId === 'draw'
         ) {
@@ -434,7 +437,7 @@ ${bet.toLocaleString()}$
 
         }
 
-        // AI logic
+        // 🤖 AI logic
         if (aiScore <= 4) {
 
           aiCards.push(
@@ -504,6 +507,7 @@ ${bet.toLocaleString()}$
           aiRank =
             finalAiPok.rank;
 
+        // 🔥 ตัดสินแพ้ชนะ
         if (playerRank > aiRank) {
 
           multi =
@@ -554,6 +558,7 @@ ${bet.toLocaleString()}$
         let result = '';
         let resultType = 'draw';
 
+        // 🤝 เสมอ
         if (
           playerScore === aiScore &&
           playerRank === aiRank
@@ -567,6 +572,7 @@ ${bet.toLocaleString()}$
 
         }
 
+        // 🎉 ชนะ
         else if (!lose) {
 
           await addMoney(
@@ -586,6 +592,7 @@ ${bet.toLocaleString()}$
 
         }
 
+        // 💀 แพ้
         else {
 
           await removeMoney(
@@ -610,6 +617,7 @@ ${bet.toLocaleString()}$
             interaction.user.id
           );
 
+        // 🎴 ปุ่มเล่นอีกครั้ง
         const playAgainRow =
           new ActionRowBuilder()
 
@@ -631,6 +639,7 @@ ${bet.toLocaleString()}$
 
             );
 
+        // 📦 Embed
         const finalEmbed =
           new EmbedBuilder()
 
@@ -661,6 +670,7 @@ ${result}
 ${updatedUser.money.toLocaleString()}$
 `);
 
+        // 🔄 อัปเดตข้อความเดิม
         await i.update({
 
           embeds: [finalEmbed],
@@ -675,11 +685,31 @@ ${updatedUser.money.toLocaleString()}$
 
     );
 
+    // ⏰ หมดเวลา → ลบปุ่ม
+    collector.on(
+      'end',
+
+      async () => {
+
+        try {
+
+          await msg.edit({
+
+            components: []
+
+          });
+
+        } catch {}
+
+      }
+
+    );
+
     return;
 
   }
 
-  // ป็อก
+  // 🔥 ป็อกจบเลย
   let lose = false;
 
   let result = '';
@@ -845,6 +875,7 @@ ${updatedUser.money.toLocaleString()}$
   );
 
 }
+
 module.exports = {
 
   data: new SlashCommandBuilder()
