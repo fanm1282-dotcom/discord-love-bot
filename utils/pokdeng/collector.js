@@ -91,7 +91,10 @@ async function createGameCollector({
 
       }
 
+      // =========================
       // 🎴 เล่นอีกครั้ง
+      // =========================
+
       if (
         i.customId.startsWith(
           'again_'
@@ -117,7 +120,10 @@ async function createGameCollector({
 
       }
 
+      // =========================
       // 🟢 จั่ว
+      // =========================
+
       if (
         i.customId === 'draw'
       ) {
@@ -128,7 +134,10 @@ async function createGameCollector({
 
       }
 
+      // =========================
       // 🤖 AI จั่ว
+      // =========================
+
       if (
         shouldAiDraw(
           aiScore
@@ -152,6 +161,7 @@ async function createGameCollector({
           aiCards
         );
 
+      // 🎴 multiplier
       const playerMulti =
         getMultiplier(
           playerCards
@@ -162,6 +172,7 @@ async function createGameCollector({
           aiCards
         );
 
+      // 👑 ป็อก
       const playerPok =
         getPok(
           playerScore,
@@ -194,16 +205,28 @@ async function createGameCollector({
       let aiRank =
         aiMulti.rank;
 
-      if (playerPok)
+      if (playerPok) {
+
         playerRank =
           playerPok.rank;
 
-      if (aiPok)
+      }
+
+      if (aiPok) {
+
         aiRank =
           aiPok.rank;
 
+      }
+
+      // =========================
       // 👑 ตัดสิน
-      if (playerRank > aiRank) {
+      // =========================
+
+      if (
+        playerRank >
+        aiRank
+      ) {
 
         multi =
           playerMulti.multi;
@@ -211,7 +234,8 @@ async function createGameCollector({
       }
 
       else if (
-        playerRank < aiRank
+        playerRank <
+        aiRank
       ) {
 
         lose = true;
@@ -247,7 +271,10 @@ async function createGameCollector({
 
       }
 
-      // 🔥 event multi
+      // =========================
+      // 🔥 event bonus
+      // =========================
+
       if (event) {
 
         if (
@@ -267,6 +294,7 @@ async function createGameCollector({
 
       }
 
+      // 💰 เงิน
       const money =
         bet * multi;
 
@@ -338,7 +366,7 @@ async function createGameCollector({
 
       );
 
-      // 💵 user ใหม่
+      // 👤 user ใหม่
       const updatedUser =
         await getUser(
           interaction.user.id
@@ -381,13 +409,13 @@ async function createGameCollector({
 
         });
 
-      // 🎴 ปุ่ม replay
+      // 🎴 replay button
       const replayRow =
         createReplayButtons(
           bet
         );
 
-      // 🔄 อัปเดต
+      // 🔄 update
       await i.update({
 
         embeds: [embed],
@@ -398,97 +426,11 @@ async function createGameCollector({
 
       });
 
-      // =========================
-      // 🎴 REPLAY COLLECTOR
-      // =========================
-
-      const replayCollector =
-        i.message.createMessageComponentCollector({
-
-          componentType:
-            ComponentType.Button,
-
-          time: 30000
-
-        });
-
-      replayCollector.on(
-        'collect',
-
-        async btn => {
-
-          // ❌ คนอื่นกด
-          if (
-            btn.user.id !==
-            interaction.user.id
-          ) {
-
-            return btn.reply({
-
-              content:
-                '❌ ไม่ใช่เกมมึง',
-
-              ephemeral: true
-
-            });
-
-          }
-
-          // 🎴 เล่นอีกครั้ง
-          if (
-            btn.customId.startsWith(
-              'again_'
-            )
-          ) {
-
-            const replayBet =
-              parseInt(
-
-                btn.customId
-                  .split('_')[1]
-
-              );
-
-            await btn.deferUpdate();
-
-            replayCollector.stop();
-
-            return runGame(
-              btn,
-              replayBet
-            );
-
-          }
-
-        }
-
-      );
-
-      // ⏰ หมดเวลา
-      replayCollector.on(
-        'end',
-
-        async () => {
-
-          try {
-
-            await i.message.edit({
-
-              components: []
-
-            });
-
-          } catch {}
-
-        }
-
-      );
-
     }
 
   );
 
-  // ⏰ collector หลักหมดเวลา
+  // ⏰ หมดเวลา
   collector.on(
     'end',
 
