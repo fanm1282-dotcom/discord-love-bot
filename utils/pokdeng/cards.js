@@ -57,11 +57,33 @@ function calculateScore(cards) {
 
 }
 
+// 🟨 ไพ่หน้า
+function isFaceCard(card) {
+
+  return [
+    'J',
+    'Q',
+    'K'
+  ].includes(card);
+
+}
+
+// 🎴 format ไพ่
+function formatCards(cards) {
+
+  return cards.join(
+    ' | '
+  );
+
+}
+
 module.exports = {
 
   cards,
   drawCard,
   getValue,
-  calculateScore
+  calculateScore,
+  isFaceCard,
+  formatCards
 
 };
