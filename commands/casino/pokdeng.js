@@ -151,7 +151,6 @@ function getAiText(user) {
 
   ];
 
-  // คนเล่นบ่อย
   if (user.casinoPlayed >= 10) {
 
     aiTexts.push(
@@ -165,7 +164,6 @@ function getAiText(user) {
 
   }
 
-  // คนแพ้เยอะ
   if (user.casinoLose >= 15) {
 
     aiTexts.push(
@@ -179,7 +177,6 @@ function getAiText(user) {
 
   }
 
-  // คนชนะเยอะ
   if (user.casinoWin >= 10) {
 
     aiTexts.push(
@@ -400,30 +397,6 @@ ${bet.toLocaleString()}$
             ephemeral: true
 
           });
-
-        }
-
-        // เล่นอีกครั้ง
-        if (
-          i.customId.startsWith(
-            'again_'
-          )
-        ) {
-
-          const replayBet =
-            parseInt(
-
-              i.customId
-                .split('_')[1]
-
-            );
-
-          await i.deferUpdate();
-
-          return runGame(
-            i,
-            replayBet
-          );
 
         }
 
@@ -921,3 +894,19 @@ module.exports = {
   }
 
 };
+
+// 👇 เพิ่มตรงนี้
+module.exports.replay =
+  async (
+    interaction,
+    bet
+  ) => {
+
+    await interaction.deferUpdate();
+
+    return runGame(
+      interaction,
+      bet
+    );
+
+  };
