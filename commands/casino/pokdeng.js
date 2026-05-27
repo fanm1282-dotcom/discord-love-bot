@@ -3,7 +3,9 @@ const {
 } = require('discord.js');
 
 const {
-  getUser
+  getUser,
+  addMoney,
+  removeMoney
 } = require('../../utils/economy');
 
 const {
@@ -37,11 +39,6 @@ const {
   getAiText
 } = require('../../utils/pokdeng/aiText');
 
-const {
-  addMoney,
-  removeMoney
-} = require('../../utils/economy');
-
 // 🎮 เกมหลัก
 async function runGame(
   interaction,
@@ -59,12 +56,28 @@ async function runGame(
     user.money < bet
   ) {
 
+    // 🎴 replay มาจากปุ่ม
+    if (
+      interaction.isButton()
+    ) {
+
+      return interaction.followUp({
+
+        content:
+          '❌ เงินมึงไม่พอ',
+
+        flags: 64
+
+      });
+
+    }
+
     return interaction.reply({
 
       content:
         '❌ เงินมึงไม่พอ',
 
-      ephemeral: true
+      flags: 64
 
     });
 
@@ -180,7 +193,7 @@ async function runGame(
         resultType =
           'win';
 
-        }
+      }
 
       else if (
         playerPok.rank <
@@ -299,13 +312,75 @@ async function runGame(
 
       });
 
-    return interaction.reply({
+    // 🎴 ถ้ามาจาก replay button
+    if (
+      interaction.isButton()
+    ) {
 
-      embeds: [embed],
+      const msg =
+        await interaction.message.edit({
 
-      components: [
-        replayRow
-      ]
+          embeds: [embed],
+
+          components: [
+            replayRow
+          ]
+
+        });
+
+      return createGameCollector({
+
+        msg,
+        interaction,
+
+        user:
+          updatedUser,
+
+        playerCards,
+        aiCards,
+
+        playerScore,
+        aiScore,
+
+        bet,
+
+        runGame
+
+      });
+
+    }
+
+    // 🎴 รอบแรก
+    const msg =
+      await interaction.reply({
+
+        embeds: [embed],
+
+        components: [
+          replayRow
+        ],
+
+        fetchReply: true
+
+      });
+
+    return createGameCollector({
+
+      msg,
+      interaction,
+
+      user:
+        updatedUser,
+
+      playerCards,
+      aiCards,
+
+      playerScore,
+      aiScore,
+
+      bet,
+
+      runGame
 
     });
 
@@ -333,19 +408,43 @@ async function runGame(
 
     });
 
-  // 📩 ส่ง
-  const msg =
-    await interaction.reply({
+  let msg;
 
-      embeds: [embed],
+  // 🎴 replay มาจากปุ่ม
+  if (
+    interaction.isButton()
+  ) {
 
-      components: [
-        gameRow
-      ],
+    msg =
+      await interaction.message.edit({
 
-      fetchReply: true
+        embeds: [embed],
 
-    });
+        components: [
+          gameRow
+        ]
+
+      });
+
+  }
+
+  // 🎴 รอบแรก
+  else {
+
+    msg =
+      await interaction.reply({
+
+        embeds: [embed],
+
+        components: [
+          gameRow
+        ],
+
+        fetchReply: true
+
+      });
+
+  }
 
   // 🎮 collector
   await createGameCollector({
@@ -426,7 +525,7 @@ module.exports = {
         content:
           '❌ เดิมพันได้ 100 - 2000',
 
-        ephemeral: true
+        flags: 64
 
       });
 
