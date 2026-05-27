@@ -898,26 +898,10 @@ ${updatedUser.money.toLocaleString()}$
         
   await i.update({
 
-    embeds: [finalEmbed],
-
-    components: [
-      playAgainRow
-    ],
-
-  });
-        await i.update({
-
   embeds: [finalEmbed],
 
   components: [
     playAgainRow
-  ]
-
-});
-
-const replayMsg =
-  await interaction.fetchReply();
-      
 
         // 🎴 collector เล่นอีกครั้ง
         const replayCollector =
