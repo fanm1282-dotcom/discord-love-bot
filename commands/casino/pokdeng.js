@@ -907,19 +907,21 @@ ${updatedUser.money.toLocaleString()}$
   });
 
 // 💬 เปิดแชทกับเจ้ามือ
-await i.followUp({
+await interaction.channel.send({
 
   content:
-    '💬 พิมพ์คุยกับเจ้ามือได้ 30 วิ'
+    `💬 ${interaction.user} พิมพ์คุยกับเจ้ามือได้ 30 วิ`
 
 });
 
-const chatCollector =
-  i.channel.createMessageCollector({
+const filter = m =>
+  m.author.id ===
+  interaction.user.id;
 
-    filter: m =>
-      m.author.id ===
-      interaction.user.id,
+const chatCollector =
+  interaction.channel.createMessageCollector({
+
+    filter,
 
     time: 30000
 
