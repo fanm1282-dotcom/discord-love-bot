@@ -302,44 +302,10 @@ client.on(
       interaction.isButton()
     ) {
 
-      // ปุ่มเล่นอีกครั้ง
-      if (
-        interaction.customId.startsWith(
-          'again_'
-        )
-      ) {
+      // ปล่อยให้ collector
+      // ใน pokdeng.js จัดการเอง
 
-        const bet =
-          parseInt(
-
-            interaction.customId
-              .split('_')[1]
-
-          );
-
-        const pokdeng =
-          client.commands.get(
-            'pokdeng'
-          );
-
-        if (!pokdeng) return;
-
-        try {
-
-          await pokdeng.replay(
-
-            interaction,
-            bet
-
-          );
-
-        } catch (err) {
-
-          console.error(err);
-
-        }
-
-      }
+      return;
 
     }
 
