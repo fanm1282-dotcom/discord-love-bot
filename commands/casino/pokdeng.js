@@ -857,7 +857,7 @@ ${bet.toLocaleString()}$
             )
 
             .setDescription(`
-${getAiText(user, resultType)}
+${await askCasinoAI(user, resultType)}
 
 🤖 AI:
 ${aiCards.join(' | ')}
@@ -1133,7 +1133,7 @@ ${updatedUser.money.toLocaleString()}$
       )
 
       .setDescription(`
-${getAiText(user, resultType)}
+${await askCasinoAI(user, resultType)}
 
 🤖 AI:
 ${aiCards.join(' | ')}
