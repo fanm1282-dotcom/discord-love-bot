@@ -111,10 +111,9 @@ async function createGameCollector({
 
             );
 
-          // 🛑 ปิด collector เดิม
-          collector.stop();
-
           await i.deferUpdate();
+
+          collector.stop();
 
           return runGame(
             i,
@@ -134,6 +133,19 @@ async function createGameCollector({
           playerCards.push(
             drawCard()
           );
+
+        }
+
+        // =========================
+        // 🔴 พอ
+        // =========================
+
+        if (
+          i.customId === 'stand'
+        ) {
+
+          // ไม่ต้องทำอะไร
+          // ไปคำนวณต่อเลย
 
         }
 
@@ -417,9 +429,6 @@ async function createGameCollector({
           createReplayButtons(
             bet
           );
-
-        // 🛑 ปิด collector เดิม
-        collector.stop();
 
         // 🔄 update
         await i.update({
