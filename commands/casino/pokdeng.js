@@ -336,9 +336,11 @@ async function sendGame(
     interaction.isButton()
   ) {
 
-    return await interaction.message.edit(
+    await interaction.update(
   payload
 );
+
+return interaction.message;
 
   }
 
