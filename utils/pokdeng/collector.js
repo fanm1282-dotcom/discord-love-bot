@@ -74,182 +74,161 @@ async function createGameCollector({
 
     async i => {
 
-      // ❌ กันคนอื่นกด
-      if (
-        i.user.id !==
-        interaction.user.id
-      ) {
+      try {
 
-        return i.reply({
+        // ❌ กันคนอื่นกด
+        if (
+          i.user.id !==
+          interaction.user.id
+        ) {
 
-          content:
-            '❌ ไม่ใช่เกมมึง',
+          return i.reply({
 
-          ephemeral: true
+            content:
+              '❌ ไม่ใช่เกมมึง',
 
-        });
+            ephemeral: true
 
-      }
+          });
 
-      // =========================
-      // 🎴 เล่นอีกครั้ง
-      // =========================
+        }
 
-      if (
-        i.customId.startsWith(
-          'again_'
-        )
-      ) {
-
-        const replayBet =
-          parseInt(
-
-            i.customId
-              .split('_')[1]
-
-          );
-
-        await i.deferUpdate();
-
-        collector.stop();
-
-        return runGame(
-          i,
-          replayBet
-        );
-
-      }
-
-      // =========================
-      // 🟢 จั่ว
-      // =========================
-
-      if (
-        i.customId === 'draw'
-      ) {
-
-        playerCards.push(
-          drawCard()
-        );
-
-      }
-
-      // =========================
-      // 🤖 AI จั่ว
-      // =========================
-
-      if (
-        shouldAiDraw(
-          aiScore
-        )
-      ) {
-
-        aiCards.push(
-          drawCard()
-        );
-
-      }
-
-      // 🎯 คำนวณใหม่
-      playerScore =
-        calculateScore(
-          playerCards
-        );
-
-      aiScore =
-        calculateScore(
-          aiCards
-        );
-
-      // 🎴 multiplier
-      const playerMulti =
-        getMultiplier(
-          playerCards
-        );
-
-      const aiMulti =
-        getMultiplier(
-          aiCards
-        );
-
-      // 👑 ป็อก
-      const playerPok =
-        getPok(
-          playerScore,
-          playerCards
-        );
-
-      const aiPok =
-        getPok(
-          aiScore,
-          aiCards
-        );
-
-      // 🎲 event
-      const event =
-        rollEvent();
-
-      // 🤖 mood
-      const mood =
-        getDealerMood(
-          user
-        );
-
-      let lose = false;
-
-      let multi = 1;
-
-      let playerRank =
-        playerMulti.rank;
-
-      let aiRank =
-        aiMulti.rank;
-
-      if (playerPok) {
-
-        playerRank =
-          playerPok.rank;
-
-      }
-
-      if (aiPok) {
-
-        aiRank =
-          aiPok.rank;
-
-      }
-
-      // =========================
-      // 👑 ตัดสิน
-      // =========================
-
-      if (
-        playerRank >
-        aiRank
-      ) {
-
-        multi =
-          playerMulti.multi;
-
-      }
-
-      else if (
-        playerRank <
-        aiRank
-      ) {
-
-        lose = true;
-
-        multi =
-          aiMulti.multi;
-
-      }
-
-      else {
+        // =========================
+        // 🎴 เล่นอีกครั้ง
+        // =========================
 
         if (
-          playerScore >
-          aiScore
+          i.customId.startsWith(
+            'again_'
+          )
+        ) {
+
+          const replayBet =
+            parseInt(
+
+              i.customId
+                .split('_')[1]
+
+            );
+
+          // 🛑 ปิด collector เดิม
+          collector.stop();
+
+          await i.deferUpdate();
+
+          return runGame(
+            i,
+            replayBet
+          );
+
+        }
+
+        // =========================
+        // 🟢 จั่ว
+        // =========================
+
+        if (
+          i.customId === 'draw'
+        ) {
+
+          playerCards.push(
+            drawCard()
+          );
+
+        }
+
+        // =========================
+        // 🤖 AI จั่ว
+        // =========================
+
+        if (
+          shouldAiDraw(
+            aiScore
+          )
+        ) {
+
+          aiCards.push(
+            drawCard()
+          );
+
+        }
+
+        // 🎯 คำนวณใหม่
+        playerScore =
+          calculateScore(
+            playerCards
+          );
+
+        aiScore =
+          calculateScore(
+            aiCards
+          );
+
+        // 🎴 multiplier
+        const playerMulti =
+          getMultiplier(
+            playerCards
+          );
+
+        const aiMulti =
+          getMultiplier(
+            aiCards
+          );
+
+        // 👑 ป็อก
+        const playerPok =
+          getPok(
+            playerScore,
+            playerCards
+          );
+
+        const aiPok =
+          getPok(
+            aiScore,
+            aiCards
+          );
+
+        // 🎲 event
+        const event =
+          rollEvent();
+
+        // 🤖 mood
+        const mood =
+          getDealerMood(
+            user
+          );
+
+        let lose = false;
+
+        let multi = 1;
+
+        let playerRank =
+          playerMulti.rank;
+
+        let aiRank =
+          aiMulti.rank;
+
+        if (playerPok) {
+
+          playerRank =
+            playerPok.rank;
+
+        }
+
+        if (aiPok) {
+
+          aiRank =
+            aiPok.rank;
+
+        }
+
+        // =========================
+        // 👑 ตัดสิน
+        // =========================
+
+        if (
+          playerRank >
+          aiRank
         ) {
 
           multi =
@@ -258,8 +237,8 @@ async function createGameCollector({
         }
 
         else if (
-          playerScore <
-          aiScore
+          playerRank <
+          aiRank
         ) {
 
           lose = true;
@@ -269,162 +248,195 @@ async function createGameCollector({
 
         }
 
-      }
-
-      // =========================
-      // 🔥 event bonus
-      // =========================
-
-      if (event) {
-
-        if (
-          event.multi > 0
-        ) {
-
-          multi *=
-            event.multi;
-
-        }
-
         else {
 
-          lose = true;
+          if (
+            playerScore >
+            aiScore
+          ) {
+
+            multi =
+              playerMulti.multi;
+
+          }
+
+          else if (
+            playerScore <
+            aiScore
+          ) {
+
+            lose = true;
+
+            multi =
+              aiMulti.multi;
+
+          }
 
         }
 
-      }
+        // =========================
+        // 🔥 event bonus
+        // =========================
 
-      // 💰 เงิน
-      const money =
-        bet * multi;
+        if (event) {
 
-      let result =
-        '🤝 เสมอ';
+          if (
+            event.multi > 0
+          ) {
 
-      let resultType =
-        'draw';
+            multi *=
+              event.multi;
 
-      // 🎉 ชนะ
-      if (
-        !lose &&
-        (
-          playerScore >
-          aiScore ||
+          }
 
-          playerRank >
-          aiRank
-        )
-      ) {
+          else {
 
-        await addMoney(
+            lose = true;
 
-          interaction.user.id,
-          money
+          }
 
-        );
+        }
 
-        result =
-          `🎉 ชนะ +${money.toLocaleString()}$`;
+        // 💰 เงิน
+        const money =
+          bet * multi;
 
-        resultType =
-          'win';
+        let result =
+          '🤝 เสมอ';
 
-      }
+        let resultType =
+          'draw';
 
-      // 💀 แพ้
-      else if (
-        lose
-      ) {
+        // 🎉 ชนะ
+        if (
+          !lose &&
+          (
+            playerScore >
+            aiScore ||
 
-        await removeMoney(
+            playerRank >
+            aiRank
+          )
+        ) {
 
-          interaction.user.id,
-          money
+          await addMoney(
 
-        );
-
-        result =
-          `💀 แพ้ -${money.toLocaleString()}$`;
-
-        resultType =
-          'lose';
-
-      }
-
-      // 📊 stats
-      await updateStats(
-
-        user,
-
-        {
-          result:
-            resultType,
-
-          amount:
+            interaction.user.id,
             money
+
+          );
+
+          result =
+            `🎉 ชนะ +${money.toLocaleString()}$`;
+
+          resultType =
+            'win';
+
         }
 
-      );
+        // 💀 แพ้
+        else if (
+          lose
+        ) {
 
-      // 👤 user ใหม่
-      const updatedUser =
-        await getUser(
-          interaction.user.id
+          await removeMoney(
+
+            interaction.user.id,
+            money
+
+          );
+
+          result =
+            `💀 แพ้ -${money.toLocaleString()}$`;
+
+          resultType =
+            'lose';
+
+        }
+
+        // 📊 stats
+        await updateStats(
+
+          user,
+
+          {
+            result:
+              resultType,
+
+            amount:
+              money
+          }
+
         );
 
-      // 🤖 AI text
-      const aiText =
-        getAiText(
+        // 👤 user ใหม่
+        const updatedUser =
+          await getUser(
+            interaction.user.id
+          );
 
-          updatedUser,
-          resultType
+        // 🤖 AI text
+        const aiText =
+          getAiText(
 
-        );
-
-      // 🎴 embed
-      const embed =
-        createResultEmbed({
-
-          user:
             updatedUser,
+            resultType
 
-          aiCards,
-          aiScore,
-          aiPok,
-          aiMulti,
+          );
 
-          playerCards,
-          playerScore,
-          playerPok,
-          playerMulti,
+        // 🎴 embed
+        const embed =
+          createResultEmbed({
 
-          result,
-          aiText,
+            user:
+              updatedUser,
 
-          event,
-          mood,
+            aiCards,
+            aiScore,
+            aiPok,
+            aiMulti,
 
-          updatedMoney:
-            updatedUser.money
+            playerCards,
+            playerScore,
+            playerPok,
+            playerMulti,
+
+            result,
+            aiText,
+
+            event,
+            mood,
+
+            updatedMoney:
+              updatedUser.money
+
+          });
+
+        // 🎴 replay button
+        const replayRow =
+          createReplayButtons(
+            bet
+          );
+
+        // 🛑 ปิด collector เดิม
+        collector.stop();
+
+        // 🔄 update
+        await i.update({
+
+          embeds: [embed],
+
+          components: [
+            replayRow
+          ]
 
         });
 
-      // 🎴 replay button
-      const replayRow =
-        createReplayButtons(
-          bet
-        );
+      } catch (err) {
 
-      // 🔄 update
-      await i.update({
+        console.log(err);
 
-        embeds: [embed],
-
-        components: [
-          replayRow
-        ]
-
-      });
+      }
 
     }
 
