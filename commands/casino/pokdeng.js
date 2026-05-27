@@ -893,8 +893,7 @@ ${result}
 💵 เงิน:
 ${updatedUser.money.toLocaleString()}$
 `);
-
-        const replayMsg =
+        
   await i.update({
 
     embeds: [finalEmbed],
@@ -902,8 +901,6 @@ ${updatedUser.money.toLocaleString()}$
     components: [
       playAgainRow
     ],
-
-    fetchReply: true
 
   });
 
