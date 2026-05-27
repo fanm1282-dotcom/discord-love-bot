@@ -329,7 +329,6 @@ async function sendGame(
 
     components: data.components || [],
 
-    fetchReply: true
 
   };
 
@@ -337,15 +336,17 @@ async function sendGame(
     interaction.isButton()
   ) {
 
-    return await interaction.editReply(
-      payload
-    );
+    return await interaction.message.edit(
+  payload
+);
 
   }
 
-  return await interaction.reply(
-    payload
-  );
+  await interaction.reply(
+  payload
+);
+
+return await interaction.fetchReply();
 
 }
 
@@ -833,21 +834,35 @@ ${bet.toLocaleString()}$
 
             .addComponents(
 
-              new ButtonBuilder()
+  new ButtonBuilder()
 
-                .setCustomId(
-                  `again_${bet}`
-                )
+    .setCustomId(
+      `again_${bet}`
+    )
 
-                .setLabel(
-                  '🎴 เล่นอีกครั้ง'
-                )
+    .setLabel(
+      '🎴 เล่นอีกครั้ง'
+    )
 
-                .setStyle(
-                  ButtonStyle.Primary
-                )
+    .setStyle(
+      ButtonStyle.Primary
+    ),
 
-            );
+  new ButtonBuilder()
+
+    .setCustomId(
+      'chat_ai'
+    )
+
+    .setLabel(
+      '💬 คุยกับเจ้ามือ'
+    )
+
+    .setStyle(
+      ButtonStyle.Secondary
+    )
+
+);
 
         const finalEmbed =
           new EmbedBuilder()
@@ -1175,33 +1190,54 @@ ${updatedUser.money.toLocaleString()}$
       time: 30000
 
     });
+        collector.on(
+  'collect',
 
-  collector.on(
-    'collect',
+  async i => {
 
-    async i => {
+    if (
+      i.user.id !==
+      interaction.user.id
+    ) {
 
-      if (
-        i.user.id !==
-        interaction.user.id
-      ) {
+      return i.reply({
 
-        return i.reply({
+        content:
+          '❌ ไม่ใช่เกมมึง',
 
-          content:
-            '❌ ไม่ใช่เกมมึง',
+        ephemeral: true
 
-          ephemeral: true
+      });
 
-        });
+    }
 
-      }
+    // 💬 คุยกับเจ้ามือ
+    if (
+      i.customId === 'chat_ai'
+    ) {
 
-      if (
-        i.customId.startsWith(
-          'again_'
-        )
-      ) {
+      const aiReply =
+        await askCasinoAI(
+          user,
+          'chat'
+        );
+
+      return i.reply({
+
+        content: aiReply,
+
+        ephemeral: true
+
+      });
+
+    }
+
+    // 🎴 เล่นอีกครั้ง
+    if (
+      i.customId.startsWith(
+        'again_'
+      )
+    ) {
 
         const replayBet =
           parseInt(
@@ -1276,7 +1312,7 @@ module.exports = {
       return interaction.reply({
 
         content:
-          '❌ เดิมพันได้ 100 - 5,000 เท่านั้น',
+          '❌ เดิมพันได้ 100 - 2,000 เท่านั้น ไอสัส',
 
         ephemeral: true
 
