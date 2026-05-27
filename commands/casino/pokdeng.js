@@ -134,67 +134,70 @@ function getPok(score, cards) {
 
 }
 
-function getAiText(user) {
+function getAiText(
+  user,
+  resultType
+) {
 
-  let aiTexts = [
+  const texts = {
 
-    '🤖 คาสิโนไม่เคยขาดทุน',
-    '🤖 ดวงมึงกากจัด',
-    '🤖 มาอีกตาไหม',
-    '🤖 เงินมึงหอมดี',
-    '🤖 กูอ่านไพ่มึงออก',
-    '🤖 วันนี้กูดวงแรง',
-    '🤖 เอาเงินมา',
-    '🤖 กูคือเจ้ามือ',
-    '🤖 รีบเล่น',
-    '🤖 วันนี้มึงไม่น่ารอด'
+    start: [
 
-  ];
+      '🤖 พร้อมเสียยัง',
+      '🤖 ขอเงินหน่อย',
+      '🤖 ตานี้กูเอาจริง',
+      '🤖 อย่าร้องทีหลังนะ'
+
+    ],
+
+    win: [
+
+      '🤖 เหี้ยเอ้ย ได้ไงวะ',
+      '🤖 ฟลุ๊คจัด',
+      '🤖 ตาหน้ากูเอาคืน',
+      '🤖 วันนี้ดวงมึงแรง'
+
+    ],
+
+    lose: [
+
+      '🤖 เงินเข้ากระเป๋ากูละ',
+      '🤖 กูบอกแล้ว',
+      '🤖 กลับไปฟาร์มเงินมา',
+      '🤖 คาสิโนรักมึง'
+
+    ],
+
+    draw: [
+
+      '🤖 รอดตัวไป',
+      '🤖 ยังไม่จบ',
+      '🤖 ตานี้ไม่นับ',
+      '🤖 เสมอเฉย'
+
+    ]
+
+  };
 
   if (user.casinoPlayed >= 10) {
 
-    aiTexts.push(
+    texts.start.push(
 
-      '🤖 อ้าว มึงอีกแล้วเหรอ',
-      '🤖 วันนี้ยังจะเสียอีก?',
-      '🤖 กูเริ่มจำหน้ามึงได้ละ',
-      '🤖 มึงนี่เล่นทุกวันเลยนะ'
-
-    );
-
-  }
-
-  if (user.casinoLose >= 15) {
-
-    aiTexts.push(
-
-      '🤖 คาสิโนรักมึงมาก',
-      '🤖 เงินมึงเข้ากระเป๋ากูหมดละ',
-      '🤖 มึงนี่สายเปย์จริงๆ',
-      '🤖 ขอบคุณที่บริจาค'
+      '🤖 อ้าว มึงอีกแล้ว',
+      '🤖 วันนี้ยังไม่เข็ด?',
+      '🤖 กูจำมึงได้ละ'
 
     );
 
   }
 
-  if (user.casinoWin >= 10) {
+  return texts[resultType][
 
-    aiTexts.push(
-
-      '🤖 กูเริ่มไม่ชอบหน้ามึงละ',
-      '🤖 มึงโกงปะเนี่ย',
-      '🤖 วันนี้ดวงมึงแรงเกิน',
-      '🤖 กูต้องเอาคืนมึง'
-
-    );
-
-  }
-
-  return aiTexts[
     Math.floor(
       Math.random() *
-      aiTexts.length
+      texts[resultType].length
     )
+
   ];
 
 }
@@ -214,17 +217,18 @@ async function sendGame(
 
   };
 
+  // ปุ่ม
   if (
-    interaction.replied ||
-    interaction.deferred
+    interaction.isButton()
   ) {
 
-    return await interaction.followUp(
+    return await interaction.editReply(
       payload
     );
 
   }
 
+  // Slash Command
   return await interaction.reply(
     payload
   );
@@ -338,20 +342,13 @@ async function runGame(
         .setTitle('🃏 ป็อกเด้ง')
 
         .setDescription(`
-${getAiText(user)}
+${getAiText(user, 'start')}
 
-🤖 AI:
-🂠 🂠
-
-━━━━━━━━━━━━━━
+🤖 AI: 🂠 🂠
 
 👤 มึง:
 ${playerCards.join(' | ')}
-
-🎯 แต้ม:
-${playerScore}
-
-━━━━━━━━━━━━━━
+🎯 ${playerScore} แต้ม
 
 💰 เดิมพัน:
 ${bet.toLocaleString()}$
@@ -397,6 +394,30 @@ ${bet.toLocaleString()}$
             ephemeral: true
 
           });
+
+        }
+
+        // เล่นอีกครั้ง
+        if (
+          i.customId.startsWith(
+            'again_'
+          )
+        ) {
+
+          const replayBet =
+            parseInt(
+
+              i.customId
+                .split('_')[1]
+
+            );
+
+          await i.deferUpdate();
+
+          return runGame(
+            i,
+            replayBet
+          );
 
         }
 
@@ -531,6 +552,7 @@ ${bet.toLocaleString()}$
           bet * multi;
 
         let result = '';
+        let resultType = 'draw';
 
         if (
           playerScore === aiScore &&
@@ -539,6 +561,9 @@ ${bet.toLocaleString()}$
 
           result =
             '🤝 เสมอ';
+
+          resultType =
+            'draw';
 
         }
 
@@ -556,6 +581,9 @@ ${bet.toLocaleString()}$
           result =
             `🎉 มึงชนะ +${money.toLocaleString()}$`;
 
+          resultType =
+            'win';
+
         }
 
         else {
@@ -571,6 +599,9 @@ ${bet.toLocaleString()}$
 
           result =
             `💀 มึงแพ้ -${money.toLocaleString()}$`;
+
+          resultType =
+            'lose';
 
         }
 
@@ -608,52 +639,25 @@ ${bet.toLocaleString()}$
             )
 
             .setDescription(`
-${getAiText(user)}
+${getAiText(user, resultType)}
 
 🤖 AI:
 ${aiCards.join(' | ')}
-
-🎯 แต้ม:
-${aiScore}
-
+🎯 ${aiScore} แต้ม
 ${finalAiPok
 ? finalAiPok.name
 : aiMulti.name}
 
-━━━━━━━━━━━━━━
-
 👤 มึง:
 ${playerCards.join(' | ')}
-
-🎯 แต้ม:
-${playerScore}
-
+🎯 ${playerScore} แต้ม
 ${finalPlayerPok
 ? finalPlayerPok.name
 : playerMulti.name}
 
-━━━━━━━━━━━━━━
-
-💰 เดิมพัน:
-${bet.toLocaleString()}$
-
 ${result}
 
-━━━━━━━━━━━━━━
-
-📊 สถิติคาสิโน:
-🎮 เล่น:
-${updatedUser.casinoPlayed}
-
-🏆 ชนะ:
-${updatedUser.casinoWin}
-
-💀 แพ้:
-${updatedUser.casinoLose}
-
-━━━━━━━━━━━━━━
-
-💵 เงินคงเหลือ:
+💵 เงิน:
 ${updatedUser.money.toLocaleString()}$
 `);
 
@@ -679,11 +683,15 @@ ${updatedUser.money.toLocaleString()}$
   let lose = false;
 
   let result = '';
+  let resultType = 'draw';
 
   if (playerPok && !aiPok) {
 
     result =
       '🎉 มึงชนะ';
+
+    resultType =
+      'win';
 
   }
 
@@ -695,6 +703,9 @@ ${updatedUser.money.toLocaleString()}$
 
     result =
       '💀 มึงแพ้';
+
+    resultType =
+      'lose';
 
   }
 
@@ -708,6 +719,9 @@ ${updatedUser.money.toLocaleString()}$
       result =
         '🎉 มึงชนะ';
 
+      resultType =
+        'win';
+
     }
 
     else if (
@@ -720,12 +734,18 @@ ${updatedUser.money.toLocaleString()}$
       result =
         '💀 มึงแพ้';
 
+      resultType =
+        'lose';
+
     }
 
     else {
 
       result =
         '🤝 เสมอ';
+
+      resultType =
+        'draw';
 
     }
 
@@ -793,46 +813,23 @@ ${updatedUser.money.toLocaleString()}$
       )
 
       .setDescription(`
-${getAiText(user)}
+${getAiText(user, resultType)}
 
 🤖 AI:
 ${aiCards.join(' | ')}
-
 ${aiPok
 ? aiPok.name
 : ''}
 
-━━━━━━━━━━━━━━
-
 👤 มึง:
 ${playerCards.join(' | ')}
-
 ${playerPok
 ? playerPok.name
 : ''}
 
-━━━━━━━━━━━━━━
-
-💰 เดิมพัน:
-${bet.toLocaleString()}$
-
 ${result}
 
-━━━━━━━━━━━━━━
-
-📊 สถิติคาสิโน:
-🎮 เล่น:
-${updatedUser.casinoPlayed}
-
-🏆 ชนะ:
-${updatedUser.casinoWin}
-
-💀 แพ้:
-${updatedUser.casinoLose}
-
-━━━━━━━━━━━━━━
-
-💵 เงินคงเหลือ:
+💵 เงิน:
 ${updatedUser.money.toLocaleString()}$
 `);
 
@@ -848,7 +845,6 @@ ${updatedUser.money.toLocaleString()}$
   );
 
 }
-
 module.exports = {
 
   data: new SlashCommandBuilder()
@@ -894,19 +890,3 @@ module.exports = {
   }
 
 };
-
-// 👇 เพิ่มตรงนี้
-module.exports.replay =
-  async (
-    interaction,
-    bet
-  ) => {
-
-    await interaction.deferUpdate();
-
-    return runGame(
-      interaction,
-      bet
-    );
-
-  };
