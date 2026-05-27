@@ -895,18 +895,59 @@ ${updatedUser.money.toLocaleString()}$
 `);
 
         const replayMsg =
-          await i.update({
+  await i.update({
 
-            embeds: [finalEmbed],
+    embeds: [finalEmbed],
 
-            components: [
-              playAgainRow
-            ],
+    components: [
+      playAgainRow
+    ],
 
-            fetchReply: true
+    fetchReply: true
 
-          });
+  });
 
+// 💬 เปิดแชทกับเจ้ามือ
+await interaction.followUp({
+
+  content:
+    '💬 พิมพ์คุยกับเจ้ามือได้ 30 วิ'
+
+});
+
+const chatCollector =
+  interaction.channel.createMessageCollector({
+
+    filter: m =>
+      m.author.id ===
+      interaction.user.id,
+
+    time: 30000
+
+  });
+
+chatCollector.on(
+  'collect',
+
+  async m => {
+
+    const aiReply =
+      await askCasinoAI(
+        user,
+        m.content
+      );
+
+    await interaction.followUp({
+
+      content:
+        `🤖 ${aiReply}`
+
+    });
+
+  }
+
+);
+        
         // 🎴 collector เล่นอีกครั้ง
         const replayCollector =
           replayMsg.createMessageComponentCollector({
@@ -1307,7 +1348,7 @@ module.exports = {
     .addIntegerOption(option =>
       option
         .setName('bet')
-        .setDescription('เงินเดิมพัน 100 - 5000')
+        .setDescription('เงินเดิมพัน 100 - 2,000')
         .setRequired(true)
     ),
 
