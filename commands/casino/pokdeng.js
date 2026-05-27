@@ -12,6 +12,10 @@ const {
   addMoney,
   removeMoney
 } = require('../../utils/economy');
+const {
+  askCasinoAI
+} = require('../../utils/casinoAI');
+
 
 const cards = [
   'A', '2', '3', '4', '5',
