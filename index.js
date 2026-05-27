@@ -218,7 +218,7 @@ const rest =
 ========================= */
 
 client.once(
-  'ready',
+  'clientReady',
 
   () => {
 
